@@ -52,13 +52,13 @@
         <div class="container-fluid">
             <div class="inner-header">
                 <div class="logo">
-                    <a href="./index.php"><img src="img/logo.png" alt=""></a>
+                    <a href="./index.php"><img src="assets/img/logo.png" alt=""></a>
                 </div>
                 <div class="header-right">
-                    <img src="img/icons/search.png" alt="" class="search-trigger">
-                    <img src="img/icons/man.png" alt="">
+                    <img src="assets/img/icons/search.png" alt="" class="search-trigger">
+                    <img src="assets/img/icons/man.png" alt="">
                     <a href="shopping-cart.php">
-                        <img src="img/icons/bag.png" alt="">
+                        <img src="assets/img/icons/bag.png" alt="">
                         <span>2</span>
                     </a>
                 </div>
@@ -75,8 +75,7 @@
                                 <li><a href="check-out.php">Check out</a></li>
                             </ul>
                         </li>
-                        <li><a href="./product-page.php">About</a></li>
-                        <li><a href="./check-out.php">Blog</a></li>
+                        <li><a href="./about-us.php">About</a></li>
                         <li><a href="./contact.php">Contact</a></li>
                     </ul>
                 </nav>
@@ -89,19 +88,19 @@
             <div class="row">
                 <div class="col-md-4">
                     <div class="header-item">
-                        <img src="img/icons/delivery.png" alt="">
+                        <img src="assets/img/icons/delivery.png" alt="">
                         <p>Free shipping on orders over $30 in USA</p>
                     </div>
                 </div>
                 <div class="col-md-4 text-left text-lg-center">
                     <div class="header-item">
-                        <img src="img/icons/voucher.png" alt="">
+                        <img src="assets/img/icons/voucher.png" alt="">
                         <p>20% Student Discount</p>
                     </div>
                 </div>
                 <div class="col-md-4 text-left text-xl-right">
                     <div class="header-item">
-                        <img src="img/icons/sales.png" alt="">
+                        <img src="assets/img/icons/sales.png" alt="">
                         <p>30% off on dresses. Use code: 30OFF</p>
                     </div>
                 </div>

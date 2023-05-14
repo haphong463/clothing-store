@@ -1,3 +1,15 @@
+<?php
+require_once '../db/dbhelper.php';
+if (isset($_GET['cat_id'])) {
+    $id = $_GET['cat_id'];
+    $sql = "SELECT * FROM category where cat_id = $id";
+    $category = executeSingleResult($sql);
+    $name = $category['cat_name'];
+    $description = $category['cat_desc'];
+}
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -62,7 +74,7 @@
                         <div class="row">
                             <div class="col-lg-6">
                                 <div class="page-header-left">
-                                    <h3>NEW ONE CATEGORY
+                                    <h3>Category
                                         <small>La Mode Parisienne</small>
                                     </h3>
                                 </div>
@@ -80,16 +92,19 @@
                 <!-- Container-fluid Ends-->
 
                 <!-- Container-fluid starts-->
-                <form action="process/category-add-process.php" method="post">
+                <form action="process/category-update-process.php" method="post">
+                    <div class="form-group">
+                        <input type="text" class="form-control" id="id" name="cat_id" hidden value="<?php echo $id ?>">
+                    </div>
                     <div class="form-group">
                         <label for="name">Category Name: </label>
-                        <input type="text" class="form-control" id="name" name="name" required placeholder="men, women, old, children...">
+                        <input type="text" class="form-control" id="name" name="name" value="<?php echo $name ?>" required placeholder="men, women, old, children...">
                     </div>
                     <div class="form-group">
                         <label for="description">Category Description: </label>
-                        <input type="text" class="form-control" name="description" required id="description" placeholder="description here..">
+                        <input type="text" class="form-control" name="description" value="<?php echo $description ?>" id="description" required placeholder="description here..">
                     </div>
-                    <button type="submit" class="btn btn-primary" name="create-cat">Add Category</button>
+                    <button type="submit" class="btn btn-primary" name="update-cat">Update Category</button>
                 </form>
                 <!-- Container-fluid Ends-->
 

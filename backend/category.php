@@ -2,8 +2,6 @@
 require_once '../db/dbhelper.php';
 $sql = "SELECT * FROM category";
 $category = executeResult($sql);
-$image = $category['image'];
-$name = $category['name'];
 ?>
 
 <!DOCTYPE html>
@@ -71,7 +69,7 @@ $name = $category['name'];
                             <div class="col-lg-6">
                                 <div class="page-header-left">
                                     <h3>Category
-                                        <small>Bigdeal Admin panel</small>
+                                        <small>La Mode Parisienne</small>
                                     </h3>
                                 </div>
                             </div>
@@ -93,49 +91,21 @@ $name = $category['name'];
                         <div class="col-sm-12">
                             <div class="card">
                                 <div class="card-header">
-                                    <h5>Digital Products</h5>
+                                    <h5>Categories</h5>
                                 </div>
                                 <div class="card-body">
                                     <div class="btn-popup pull-right">
                                         <a href="category-add.php">
-                                            <button type="button" class="btn btn-secondary" data-toggle="modal" data-original-title="test" data-target="#exampleModal">Add Category</button>
+                                            <button type="button" class="btn btn-secondary" data-original-title="test">Add Category</button>
                                         </a>
-                                        <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                            <div class="modal-dialog" role="document">
-                                                <div class="modal-content">
-                                                    <div class="modal-header">
-                                                        <h5 class="modal-title f-w-600" id="exampleModalLabel">Add Digital Product</h5>
-                                                        <button class="close" type="button" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
-                                                    </div>
-                                                    <div class="modal-body">
-                                                        <form class="needs-validation">
-                                                            <div class="form">
-                                                                <div class="form-group">
-                                                                    <label for="validationCustom01" class="mb-1">Category Name :</label>
-                                                                    <input class="form-control" id="validationCustom01" type="text">
-                                                                </div>
-                                                                <div class="form-group mb-0">
-                                                                    <label for="validationCustom02" class="mb-1">Category Image :</label>
-                                                                    <input class="form-control" id="validationCustom02" type="file">
-                                                                </div>
-                                                            </div>
-                                                        </form>
-                                                    </div>
-                                                    <div class="modal-footer">
-                                                        <button class="btn btn-primary" type="button">Save</button>
-                                                        <button class="btn btn-secondary" type="button" data-dismiss="modal">Close</button>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
                                     </div>
                                     <div class="table-responsive">
                                         <div id="" class="product-physical">
                                             <table class="table">
                                                 <thead>
                                                     <tr>
-                                                        <th scope="col">Image</th>
                                                         <th scope="col">Name</th>
+                                                        <th scope="col">Description</th>
                                                         <th scope="col">Action</th>
                                                     </tr>
                                                 </thead>
@@ -145,9 +115,9 @@ $name = $category['name'];
                                                         foreach ($category as $c) {
                                                     ?>
                                                             <tr>
-                                                                <td><img src="<?php echo $c['image'] ?>" alt="" width="50px" height="50px"></td>
-                                                                <td><?php echo $c['name'] ?></td>
-                                                                <td><a href=""><button class="btn btn-info">Edit</button></a> | <a href="process/category-delete.php?id=<?php echo $c['id']; ?>"><button class="btn btn-danger">Delete</button></a> </td>
+                                                                <td><b><?php echo $c['cat_name'] ?></b></td>
+                                                                <td width="70%"><?php echo $c['cat_desc'] ?></td>
+                                                                <td><a href="category-update.php?cat_id=<?php echo $c['cat_id'] ?>"><button class="btn btn-info">Edit</button></a> | <a href="process/category-delete.php?id=<?php echo $c['cat_id']; ?>"><button class="btn btn-danger">Delete</button></a> </td>
                                                             </tr>
                                                     <?php
                                                         }
@@ -167,57 +137,4 @@ $name = $category['name'];
             </div>
 
             <!-- footer start-->
-            <footer class="footer">
-                <div class="container-fluid">
-                    <div class="row">
-                        <div class="col-md-6 footer-copyright">
-                            <p class="mb-0">Copyright 2019 © Bigdeal All rights reserved.</p>
-                        </div>
-                        <div class="col-md-6">
-                            <p class="pull-right mb-0">Hand crafted & made with<i class="fa fa-heart"></i></p>
-                        </div>
-                    </div>
-                </div>
-            </footer>
-            <!-- footer end-->
-
-        </div>
-
-    </div>
-
-    <!-- latest jquery-->
-    <script src="../assets/js/jquery-3.3.1.min.js"></script>
-
-    <!-- Bootstrap js-->
-    <script src="../assets/js/popper.min.js"></script>
-    <script src="../assets/js/bootstrap.js"></script>
-
-    <!-- feather icon js-->
-    <script src="../assets/js/icons/feather-icon/feather.min.js"></script>
-    <script src="../assets/js/icons/feather-icon/feather-icon.js"></script>
-
-    <!-- Sidebar jquery-->
-    <script src="../assets/js/sidebar-menu.js"></script>
-
-    <!-- Jsgrid js-->
-    <script src="../assets/js/jsgrid/jsgrid.min.js"></script>
-    <script src="../assets/js/jsgrid/griddata-digital.js"></script>
-    <script src="../assets/js/jsgrid/jsgrid-manage-product.js"></script>
-
-    <!--Customizer admin-->
-    <script src="../assets/js/admin-customizer.js"></script>
-
-    <!-- lazyload js-->
-    <script src="../assets/js/lazysizes.min.js"></script>
-
-
-
-    <!--right sidebar js-->
-    <script src="../assets/js/chat-menu.js"></script>
-
-    <!--script admin-->
-    <script src="../assets/js/admin-script.js"></script>
-
-</body>
-
-</html>
+            <?php include('part/footer.php') ?>

@@ -80,16 +80,20 @@
                 <!-- Container-fluid Ends-->
 
                 <!-- Container-fluid starts-->
-                <form action="process/category-add-process.php" method="post">
+                <form action="process/slide-add-process.php" method="post" enctype="multipart/form-data">
                     <div class="form-group">
-                        <label for="name">Category Name: </label>
-                        <input type="text" class="form-control" id="name" name="name" required placeholder="men, women, old, children...">
+                        <label for="year">Year: </label>
+                        <input type="text" class="form-control" id="year" name="year" required>
                     </div>
                     <div class="form-group">
-                        <label for="description">Category Description: </label>
-                        <input type="text" class="form-control" name="description" required id="description" placeholder="description here..">
+                        <label for="heading">Heading: </label>
+                        <input type="text" class="form-control" name="heading" required id="heading" placeholder="enter heading here...">
                     </div>
-                    <button type="submit" class="btn btn-primary" name="create-cat">Add Category</button>
+                    <div class="form-group">
+                        <label for="slide">Image: </label>
+                        <input type="file" class="form-control" name="slide" required id="slide">
+                    </div>
+                    <button type="submit" class="btn btn-primary" name="create-slide">Add Slide</button>
                 </form>
                 <!-- Container-fluid Ends-->
 

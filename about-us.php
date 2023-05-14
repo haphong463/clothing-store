@@ -1,18 +1,18 @@
 <?php include('layout/header.php') ?>
-<div class="bg-light">
-    <div class="container py-5">
-        <div class="row h-100 align-items-center py-5">
-            <div class="col-lg-6">
-                <h1 class="display-4">About us page</h1>
-                <p class="lead text-muted mb-0">Create a minimal about us page using Bootstrap 4.</p>
-                <p class="lead text-muted">Snippet by <a href="https://bootstrapious.com/snippets" class="text-muted">
-                        <u>Bootstrapious</u></a>
-                </p>
+<section class="page-add">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-4">
+                <div class="page-breadcrumb">
+                    <h2>About Us<span>.</span></h2>
+                </div>
             </div>
-            <div class="col-lg-6 d-none d-lg-block"><img src="https://bootstrapious.com/i/snippets/sn-about/illus.png" alt="" class="img-fluid"></div>
+            <div class="col-lg-8">
+                <img src="img/add.jpg" alt="">
+            </div>
         </div>
     </div>
-</div>
+</section>
 
 <div class="bg-white py-5">
     <div class="container py-5">

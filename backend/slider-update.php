@@ -1,3 +1,15 @@
+<?php
+require_once('../db/dbhelper.php');
+if (isset($_GET['id'])) {
+    $id = $_GET['id'];
+    $sql = "SELECT * FROM slider where id = $id";
+    $info = executeSingleResult($sql);
+    $year = $info['year'];
+    $heading = $info['heading'];
+    $image = $info['image'];
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -80,16 +92,22 @@
                 <!-- Container-fluid Ends-->
 
                 <!-- Container-fluid starts-->
-                <form action="process/category-add-process.php" method="post">
+                <form action="process/slide-update-process.php" method="post" enctype="multipart/form-data">
+                    <input type="hidden" name="id" value="<?php echo $id ?>">
                     <div class="form-group">
-                        <label for="name">Category Name: </label>
-                        <input type="text" class="form-control" id="name" name="name" required placeholder="men, women, old, children...">
+                        <label for="year">Year: </label>
+                        <input type="text" class="form-control" value="<?php echo $year ?>" id="year" required name="year">
                     </div>
                     <div class="form-group">
-                        <label for="description">Category Description: </label>
-                        <input type="text" class="form-control" name="description" required id="description" placeholder="description here..">
+                        <label for="heading">Heading: </label>
+                        <input type="text" class="form-control" value="<?php echo $heading ?>" required name="heading" id="heading" placeholder="enter heading here...">
                     </div>
-                    <button type="submit" class="btn btn-primary" name="create-cat">Add Category</button>
+                    <div class="form-group">
+                        <label for="slide">Image: </label>
+                        <input type="file" class="form-control" name="slide" id="slide">
+                        <img src="../<?php echo $image ?>" alt="" width="1440px" height="670px">
+                    </div>
+                    <button type="submit" class="btn btn-primary" name="update-slide">Update Slide</button>
                 </form>
                 <!-- Container-fluid Ends-->
 

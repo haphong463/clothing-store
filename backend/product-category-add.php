@@ -80,16 +80,16 @@
                 <!-- Container-fluid Ends-->
 
                 <!-- Container-fluid starts-->
-                <form action="process/category-add-process.php" method="post">
+                <form action="process/product-category-add-process.php" method="post">
                     <div class="form-group">
-                        <label for="name">Category Name: </label>
-                        <input type="text" class="form-control" id="name" name="name" required placeholder="men, women, old, children...">
+                        <label for="name">Product Category Name: </label>
+                        <input type="text" class="form-control" id="name" name="name" req placeholder="dresses, t-shirt, jacket, ...">
                     </div>
                     <div class="form-group">
-                        <label for="description">Category Description: </label>
-                        <input type="text" class="form-control" name="description" required id="description" placeholder="description here..">
+                        <label for="description">Product Category Description: </label>
+                        <input type="text" class="form-control" name="description" id="description" placeholder="description here..">
                     </div>
-                    <button type="submit" class="btn btn-primary" name="create-cat">Add Category</button>
+                    <button type="submit" class="btn btn-primary" name="create-pro-cat">Add Product Category</button>
                 </form>
                 <!-- Container-fluid Ends-->
 

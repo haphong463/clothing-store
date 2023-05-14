@@ -1,3 +1,9 @@
+<?php
+require_once '../db/dbhelper.php';
+$sql = "SELECT * FROM slider";
+$slider = executeResult($sql);
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -62,7 +68,7 @@
                         <div class="row">
                             <div class="col-lg-6">
                                 <div class="page-header-left">
-                                    <h3>NEW ONE CATEGORY
+                                    <h3>Slider
                                         <small>La Mode Parisienne</small>
                                     </h3>
                                 </div>
@@ -80,17 +86,54 @@
                 <!-- Container-fluid Ends-->
 
                 <!-- Container-fluid starts-->
-                <form action="process/category-add-process.php" method="post">
-                    <div class="form-group">
-                        <label for="name">Category Name: </label>
-                        <input type="text" class="form-control" id="name" name="name" required placeholder="men, women, old, children...">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5>Slider</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="btn-popup pull-right">
+                                        <a href="slider-add.php">
+                                            <button type="button" class="btn btn-secondary" data-original-title="test">Add Slide</button>
+                                        </a>
+                                    </div>
+                                    <div class="table-responsive">
+                                        <div id="" class="product-physical">
+                                            <table class="table">
+                                                <thead>
+                                                    <tr>
+                                                        <th scope="col">Year</th>
+                                                        <th scope="col">Heading</th>
+                                                        <th scope="col">Image</th>
+                                                        <th scope="col">Action</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <?php
+                                                    if ($slider != null) {
+                                                        foreach ($slider as $s) {
+                                                    ?>
+                                                            <tr>
+                                                                <td><b><?php echo $s['year'] ?></b></td>
+                                                                <td><b><?php echo $s['heading']?></b></td>
+                                                                <td><img src="../<?php echo $s['image'] ?>" alt="" width="200px" height="100px"></td>
+                                                                <td><a href="slider-update.php?id=<?php echo $s['id'] ?>"><button class="btn btn-info">Edit</button></a> | <a href="process/category-delete.php?id=<?php echo $c['cat_id']; ?>"><button class="btn btn-danger">Delete</button></a> </td>
+                                                            </tr>
+                                                    <?php
+                                                        }
+                                                    }
+                                                    ?>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <label for="description">Category Description: </label>
-                        <input type="text" class="form-control" name="description" required id="description" placeholder="description here..">
-                    </div>
-                    <button type="submit" class="btn btn-primary" name="create-cat">Add Category</button>
-                </form>
+                </div>
                 <!-- Container-fluid Ends-->
 
             </div>

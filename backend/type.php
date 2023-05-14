@@ -1,3 +1,9 @@
+<?php
+require_once '../db/dbhelper.php';
+$sql = "SELECT * FROM product_category";
+$product_category = executeResult($sql);
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -62,7 +68,7 @@
                         <div class="row">
                             <div class="col-lg-6">
                                 <div class="page-header-left">
-                                    <h3>NEW ONE CATEGORY
+                                    <h3>Product Categories
                                         <small>La Mode Parisienne</small>
                                     </h3>
                                 </div>
@@ -80,17 +86,52 @@
                 <!-- Container-fluid Ends-->
 
                 <!-- Container-fluid starts-->
-                <form action="process/category-add-process.php" method="post">
-                    <div class="form-group">
-                        <label for="name">Category Name: </label>
-                        <input type="text" class="form-control" id="name" name="name" required placeholder="men, women, old, children...">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5>Product Categories</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="btn-popup pull-right">
+                                        <a href="product-category-add.php">
+                                            <button type="button" class="btn btn-secondary" data-original-title="test">Add Product Category</button>
+                                        </a>
+                                    </div>
+                                    <div class="table-responsive">
+                                        <div id="" class="product-physical">
+                                            <table class="table">
+                                                <thead>
+                                                    <tr>
+                                                        <th scope="col">Name</th>
+                                                        <th scope="col">Description</th>
+                                                        <th scope="col">Action</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <?php
+                                                    if ($product_category != null) {
+                                                        foreach ($product_category as $c) {
+                                                    ?>
+                                                            <tr>
+                                                                <td><b><?php echo $c['p_cat_name'] ?></b></td>
+                                                                <td width="70%"><?php echo $c['p_cat_desc'] ?></td>
+                                                                <td><a href="product-category-update.php?p_cat_id=<?php echo $c['p_cat_id'] ?>"><button class="btn btn-info">Edit</button></a> | <a href="process/category-delete.php?p_cat_id=<?php echo $c['p_cat_id']; ?>"><button class="btn btn-danger">Delete</button></a> </td>
+                                                            </tr>
+                                                    <?php
+                                                        }
+                                                    }
+                                                    ?>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <label for="description">Category Description: </label>
-                        <input type="text" class="form-control" name="description" required id="description" placeholder="description here..">
-                    </div>
-                    <button type="submit" class="btn btn-primary" name="create-cat">Add Category</button>
-                </form>
+                </div>
                 <!-- Container-fluid Ends-->
 
             </div>

@@ -1,3 +1,9 @@
+<?php
+require_once('db/dbhelper.php');
+$sql = "SELECT * FROM product_category";
+$categories = executeResult($sql);
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -7,7 +13,7 @@
     <meta name="keywords" content="Yoga, unica, creative, html">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Violet | Template</title>
+    <title>Parisienne | Store</title>
 
     <!-- Google Font -->
     <link href="https://fonts.googleapis.com/css?family=Amatic+SC:400,700&display=swap" rel="stylesheet">
@@ -71,8 +77,14 @@
                         <li><a class="active" href="./index.php">Home</a></li>
                         <li><a href="./categories.php">Shop</a>
                             <ul class="sub-menu">
-                                <li><a href="product-page.php">Product Page</a></li>
-                                <li><a href="check-out.php">Check out</a></li>
+                                <?php
+                                foreach ($categories as $c) {
+                                ?>
+                                    <li><a href="categories.php?p_cat_id=<?php echo $c['p_cat_id'] ?>"><?php echo $c['p_cat_name'] ?></a></li>
+                                <?php
+                                }
+
+                                ?>
                             </ul>
                         </li>
                         <li><a href="./about-us.php">About</a></li>

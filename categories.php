@@ -1,3 +1,33 @@
+<?php
+require_once('db/dbhelper.php');
+$sql = "SELECT * FROM Product";
+$p_cat_id = isset($_GET['p_cat_id']) ? $_GET['p_cat_id'] : null;
+if ($p_cat_id) {
+    $sql = "SELECT * FROM Product WHERE p_cat_id = $p_cat_id";
+    $sql2 = "SELECT p_cat_name from product_category where p_cat_id = $p_cat_id";
+    $p_cat = executeSingleResult($sql2);
+} else {
+    $sql = "SELECT * FROM Product";
+    $p_cat = array('p_cat_name' => 'Shop');
+}
+
+
+
+$products = executeResult($sql);
+$totalProducts = count($products); // Tổng số sản phẩm
+$limit = 9; // Số sản phẩm hiển thị trên mỗi trang
+$totalPages = ceil($totalProducts / $limit); // Tổng số trang
+$currentPage = isset($_GET['page']) ? $_GET['page'] : 1; // Trang hiện tại
+
+$offset = ($currentPage - 1) * $limit; // Offset của trang hiện tại trong danh sách sản phẩm
+
+// Lấy danh sách sản phẩm của trang hiện tại
+$sql .= " LIMIT $limit OFFSET $offset";
+$products = executeResult($sql);
+
+
+?>
+
 <?php include('layout/header.php') ?>
 
 <!-- Page Add Section Begin -->
@@ -8,12 +38,11 @@
                 <div class="page-breadcrumb">
                     <h2>Dresses<span>.</span></h2>
                     <a href="#">Home</a>
-                    <a href="#">Dresses</a>
-                    <a class="active" href="#">Night Dresses</a>
+                    <a href="#"><?php echo $p_cat['p_cat_name'] ?></a>
                 </div>
             </div>
             <div class="col-lg-8">
-                <img src="assets/img/add.jpg" alt="">
+                <img src="img/add.jpg" alt="">
             </div>
         </div>
     </div>
@@ -28,269 +57,70 @@
                 <div class="col-lg-12">
                     <div class="categories-filter">
                         <div class="cf-left">
-                            <form action="#">
-                                <select class="sort">
+                            <form action="categories.php">
+                                <select class="sort" name="sort">
                                     <option value="">Sort by</option>
-                                    <option value="">Orders</option>
-                                    <option value="">Newest</option>
-                                    <option value="">Price</option>
+                                    <option value="orders">Orders</option>
+                                    <option value="newest">Newest</option>
+                                    <option value="price">Price</option>
                                 </select>
                             </form>
                         </div>
                         <div class="cf-right">
-                            <span>20 Products</span>
-                            <a href="#">2</a>
-                            <a href="#" class="active">4</a>
-                            <a href="#">6</a>
+                            <span><?php echo $totalProducts; ?> Products</span>
+
+                            <?php
+                            for ($i = 1; $i <= $totalPages; $i++) {
+                                $activeClass = ($i == $currentPage) ? 'active' : '';
+                                echo '<a href="categories.php?page=' . $i . '" class="' . $activeClass . '">' . $i . '</a>';
+                            }
+                            ?>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
         <div class="row">
-            <div class="col-lg-6 col-md-6">
-                <div class="single-product-item">
-                    <figure>
-                        <img src="assets/img/products/img-9.jpg" alt="">
-                        <div class="p-status">new</div>
-                        <div class="hover-icon">
-                            <a href="assets/img/products/img-9.jpg" class="pop-up"><img src="assets/img/icons/zoom-plus.png" alt=""></a>
-                        </div>
-                    </figure>
-                    <div class="product-text">
-                        <a href="#">
-                            <h6>Green Dress with details</h6>
-                        </a>
-                        <p>$22.90</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-6 col-md-6">
-                <div class="row">
-                    <div class="col-lg-6 col-md-6">
-                        <div class="single-product-item">
-                            <figure>
-                                <img src="assets/img/products/img-2.jpg" alt="">
-                                <div class="p-status sale">sale</div>
-                            </figure>
-                            <div class="product-text">
-                                <a href="#">
-                                    <h6>Yellow Maxi Dress</h6>
-                                </a>
-                                <p>$25.90</p>
+            <?php foreach ($products as $product) {
+                $pid = $product['pid'];
+                $name = $product['name'];
+                $price = $product['price'];
+
+                // Lấy hình ảnh đầu tiên từ bảng Product_Image
+                $sqlImage = "SELECT image_path FROM Product_Image WHERE pid = $pid LIMIT 1";
+                $resultImage = executeSingleResult($sqlImage);
+                $imagePath = ($resultImage != null) ? $resultImage['image_path'] : "img/default-image.jpg";
+            ?>
+                <div class="col-lg-3 col-md-6">
+                    <div class="single-product-item">
+                        <figure>
+                            <img src="<?php echo $imagePath; ?>" width="500px" height="300px" alt="">
+                            <div class="hover-icon">
+                                <a href="<?php echo $imagePath; ?>" class="pop-up"><img src="img/icons/zoom-plus.png" alt=""></a>
                             </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-6 col-md-6">
-                        <div class="single-product-item">
-                            <figure>
-                                <img src="assets/img/products/img-3.jpg" alt="">
-                                <div class="p-status">new</div>
-                                <div class="hover-icon">
-                                    <a href="assets/img/products/img-3.jpg" class="pop-up"><img src="assets/img/icons/zoom-plus.png" alt=""></a>
-                                </div>
-                            </figure>
-                            <div class="product-text">
-                                <a href="#">
-                                    <h6>One piece bodysuit</h6>
-                                </a>
-                                <p>$19.90</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-6 col-md-6">
-                        <div class="single-product-item">
-                            <figure>
-                                <img src="assets/img/products/img-6.jpg" alt="">
-                                <div class="p-status sale">sale</div>
-                            </figure>
-                            <div class="product-text">
-                                <a href="#">
-                                    <h6>Yellow Maxi Dress</h6>
-                                </a>
-                                <p>$25.90</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-6 col-md-6">
-                        <div class="single-product-item">
-                            <figure>
-                                <img src="assets/img/products/img-1.jpg" alt="">
-                                <div class="hover-icon">
-                                    <a href="assets/img/products/img-1.jpg" class="pop-up"><img src="assets/img/icons/zoom-plus.png" alt=""></a>
-                                </div>
-                            </figure>
-                            <div class="product-text">
-                                <a href="#">
-                                    <h6>One piece bodysuit</h6>
-                                </a>
-                                <p>$19.90</p>
-                            </div>
+                        </figure>
+                        <div class="product-text">
+                            <a href="product-page.php?pid=<?php echo $pid ?>">
+                                <h6><?php echo $name ?></h6>
+                            </a>
+                            <p>$<?php echo $price ?></p>
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="col-lg-3 col-md-6">
-                <div class="single-product-item">
-                    <figure>
-                        <img src="assets/img/products/img-5.jpg" alt="">
-                        <div class="p-status">new</div>
-                        <div class="hover-icon">
-                            <a href="assets/img/products/img-5.jpg" class="pop-up"><img src="assets/img/icons/zoom-plus.png" alt=""></a>
-                        </div>
-                    </figure>
-                    <div class="product-text">
-                        <a href="#">
-                            <h6>Green Dress with details</h6>
-                        </a>
-                        <p>$22.90</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-3 col-md-6">
-                <div class="single-product-item">
-                    <figure>
-                        <img src="assets/img/products/img-4.jpg" alt="">
-                        <div class="p-status popular">popular</div>
-                        <div class="hover-icon">
-                            <a href="assets/img/products/img-4.jpg" class="pop-up"><img src="assets/img/icons/zoom-plus.png" alt=""></a>
-                        </div>
-                    </figure>
-                    <div class="product-text">
-                        <a href="#">
-                            <h6>Blue Dress with details</h6>
-                        </a>
-                        <p>$35.50</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-3 col-md-6">
-                <div class="single-product-item">
-                    <figure>
-                        <img src="assets/img/products/img-8.jpg" alt="">
-                        <div class="p-status popular">popular</div>
-                        <div class="hover-icon">
-                            <a href="assets/img/products/img-8.jpg" class="pop-up"><img src="assets/img/icons/zoom-plus.png" alt=""></a>
-                        </div>
-                    </figure>
-                    <div class="product-text">
-                        <a href="#">
-                            <h6>Blue Dress with details</h6>
-                        </a>
-                        <p>$35.50</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-3 col-md-6">
-                <div class="single-product-item">
-                    <figure>
-                        <img src="assets/img/products/img-10.jpg" alt="">
-                        <div class="p-status popular">popular</div>
-                        <div class="hover-icon">
-                            <a href="assets/img/products/img-10.jpg" class="pop-up"><img src="assets/img/icons/zoom-plus.png" alt=""></a>
-                        </div>
-                    </figure>
-                    <div class="product-text">
-                        <a href="#">
-                            <h6>Blue Dress with details</h6>
-                        </a>
-                        <p>$35.50</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-6 col-md-6">
-                <div class="row">
-                    <div class="col-lg-6 col-md-6">
-                        <div class="single-product-item">
-                            <figure>
-                                <img src="assets/img/products/img-11.jpg" alt="">
-                                <div class="p-status sale">sale</div>
-                            </figure>
-                            <div class="product-text">
-                                <a href="#">
-                                    <h6>Yellow Maxi Dress</h6>
-                                </a>
-                                <p>$25.50</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-6 col-md-6">
-                        <div class="single-product-item">
-                            <figure>
-                                <img src="assets/img/products/img-12.jpg" alt="">
-                                <div class="p-status">new</div>
-                                <div class="hover-icon">
-                                    <a href="assets/img/products/img-12.jpg" class="pop-up"><img src="assets/img/icons/zoom-plus.png" alt=""></a>
-                                </div>
-                            </figure>
-                            <div class="product-text">
-                                <a href="#">
-                                    <h6>One piece bodysuit</h6>
-                                </a>
-                                <p>$19.90</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-6 col-md-6">
-                        <div class="single-product-item">
-                            <figure>
-                                <img src="assets/img/products/img-14.jpg" alt="">
-                                <div class="p-status sale">sale</div>
-                            </figure>
-                            <div class="product-text">
-                                <a href="#">
-                                    <h6>Yellow Maxi Dress</h6>
-                                </a>
-                                <p>$25.90</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-6 col-md-6">
-                        <div class="single-product-item">
-                            <figure>
-                                <img src="assets/img/products/img-15.jpg" alt="">
-                                <div class="hover-icon">
-                                    <a href="assets/img/products/img-15.jpg" class="pop-up"><img src="assets/img/icons/zoom-plus.png" alt=""></a>
-                                </div>
-                            </figure>
-                            <div class="product-text">
-                                <a href="#">
-                                    <h6>One piece bodysuit</h6>
-                                </a>
-                                <p>$19.90</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-6 col-md-6">
-                <div class="single-product-item">
-                    <figure>
-                        <img src="assets/img/products/img-13.jpg" alt="">
-                        <div class="p-status">new</div>
-                        <div class="hover-icon">
-                            <a href="assets/img/products/img-13.jpg" class="pop-up"><img src="assets/img/icons/zoom-plus.png" alt=""></a>
-                        </div>
-                    </figure>
-                    <div class="product-text">
-                        <a href="#">
-                            <h6>Green Dress with details</h6>
-                        </a>
-                        <p>$22.90</p>
-                    </div>
-                </div>
-            </div>
+            <?php } ?>
         </div>
         <div class="more-product">
             <div class="row">
                 <div class="col-lg-12 text-center">
-                    <a href="#" class="primary-btn">Load More</a>
+                    <?php if ($currentPage < $totalPages) { ?>
+                        <a href="categories.php?page=<?php echo $currentPage + 1; ?>" class="primary-btn">Load More</a>
+                    <?php } ?>
                 </div>
             </div>
         </div>
     </div>
 </section>
+
 <!-- Categories Page Section End -->
 
-<!-- Footer Section Begin -->
 <?php include('layout/footer.php') ?>

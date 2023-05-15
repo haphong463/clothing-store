@@ -28,7 +28,6 @@ $p_category = executeResult($sql);
                             <div class="col-lg-12">
                                 <h1>' . $year . '</h1>
                                 <h2>' . $heading . '</h2>
-                                <a href="#" class="primary-btn">See More</a>
                             </div>
                         </div>
                     </div>
@@ -69,15 +68,14 @@ $p_category = executeResult($sql);
         </div>
         <div class="row" id="product-list">
             <?php
-            $product_info = "SELECT p.*, i.image_path
-                    FROM product AS p
+            $product_info = "SELECT product.*, product_image.image_path
+                    FROM product
                     LEFT JOIN (
                         SELECT pid, MIN(id) AS min_id
                         FROM product_image
                         GROUP BY pid
-                    ) AS sub ON p.pid = sub.pid
-                    LEFT JOIN product_image AS i ON sub.min_id = i.id LIMIT 8";
-
+                    ) AS sub ON product.pid = sub.pid
+                    LEFT JOIN product_image ON sub.min_id = product_image.id LIMIT 8";
             $resultInfo = executeResult($product_info);
 
             foreach ($resultInfo as $info) {
@@ -95,7 +93,7 @@ $p_category = executeResult($sql);
                 }
             ?>
 
-                <div class="col-lg-3 col-sm-6 mix all <?php echo $p_cat_name; ?> bags">
+                <div class="col-lg-3 col-sm-6 mix all <?php echo $p_cat_name; ?>">
                     <div class="single-product-item">
                         <figure>
                             <a href="product-page.php?pid=<?php echo $pid ?>"><img src="<?php echo $imagePath ?>" width="300px" height="300px" alt=""></a>

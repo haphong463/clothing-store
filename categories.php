@@ -11,11 +11,9 @@ if ($p_cat_id) {
     $p_cat = array('p_cat_name' => 'Shop');
 }
 
-
-
 $products = executeResult($sql);
 $totalProducts = count($products); // Tổng số sản phẩm
-$limit = 9; // Số sản phẩm hiển thị trên mỗi trang
+$limit = 12; // Số sản phẩm hiển thị trên mỗi trang
 $totalPages = ceil($totalProducts / $limit); // Tổng số trang
 $currentPage = isset($_GET['page']) ? $_GET['page'] : 1; // Trang hiện tại
 
@@ -36,9 +34,9 @@ $products = executeResult($sql);
         <div class="row">
             <div class="col-lg-4">
                 <div class="page-breadcrumb">
-                    <h2>Dresses<span>.</span></h2>
-                    <a href="#">Home</a>
-                    <a href="#"><?php echo $p_cat['p_cat_name'] ?></a>
+                    <h2><?php echo $p_cat['p_cat_name'] ?><span>.</span></h2>
+                    <a href="index.php">Home</a>
+                    <a href="categories.php"><?php echo $p_cat['p_cat_name'] ?></a>
                 </div>
             </div>
             <div class="col-lg-8">

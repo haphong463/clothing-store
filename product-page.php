@@ -11,6 +11,12 @@ $pid = $_GET['pid'];
 $product_query = "SELECT * FROM product WHERE pid = $pid";
 $product_result = executeSingleResult($product_query);
 
+$p_cat_id = $product_result['p_cat_id'];
+$sql_p_cat = "SELECT * FROM product_category WHERE p_cat_id = $p_cat_id";
+$p_cat_result = executeSingleResult($sql_p_cat);
+
+
+
 // Nếu không tìm thấy pid trong bảng Product, chuyển hướng về trang index.php
 if (!$product_result) {
     header("Location: index.php"); // Chuyển hướng về trang index.php
@@ -26,10 +32,9 @@ if (!$product_result) {
         <div class="row">
             <div class="col-lg-4">
                 <div class="page-breadcrumb">
-                    <h2>Shirts<span>.</span></h2>
-                    <a href="#">Home</a>
-                    <a href="#">Dresses</a>
-                    <a class="active" href="#">Night Dresses</a>
+                    <h2><?php echo $p_cat_result['p_cat_name'] ?><span>.</span></h2>
+                    <a href="index.php">Home</a>
+                    <a href="categories.php?p_cat_id=<?php echo $p_cat_id ?>"><?php echo $p_cat_result['p_cat_name'] ?></a>
                 </div>
             </div>
             <div class="col-lg-8">
@@ -44,8 +49,8 @@ if (!$product_result) {
 <section class="product-page">
     <div class="container">
         <div class="product-control">
-            <a href="#">Previous</a>
-            <a href="#">Next</a>
+            <a href="product-page.php?pid=<?php echo $pid - 1 ?>">Previous</a>
+            <a href="product-page.php?pid=<?php echo $pid + 1 ?>">Next</a>
         </div>
         <div class="row">
             <div class="col-lg-6">
@@ -73,7 +78,7 @@ if (!$product_result) {
                     ?>
                             <div class="product-img">
                                 <figure>
-                                    <img src="<?php echo $imagePath; ?>" width="500px" height="500px" alt="">
+                                    <img src="<?php echo $imagePath; ?>" width="300px" height="500px" alt="">
                                     <div class="p-status"><?php echo $statusText ?></div>
                                 </figure>
                             </div>
@@ -110,11 +115,59 @@ if (!$product_result) {
                             <i class="fa fa-star"></i>
                         </div>
                     </div>
-                    <p>
-                        <?php
-                        echo $info_product['description'];
-                        ?>
-                    </p>
+                    <?php
+                    echo $info_product['description'];
+                    ?>
+                    <?php
+                    $sql_color_size = "SELECT DISTINCT color, size FROM product_variant WHERE p_id = $pid";
+                    $result_color_size = executeSingleResult($sql_color_size);
+
+                    $colorString = $result_color_size['color']; // Chuỗi màu sắc (ví dụ: "white,black,yellow")
+                    $sizeString = $result_color_size['size'];
+
+                    $sizes = explode(',', $sizeString);
+                    $colors = explode(',', $colorString); // Chuyển chuỗi thành mảng các màu sắc
+                    ?>
+
+
+
+
+                    <form action="">
+                        <div class="product-color">
+                            <label style="color: #838383; font-size: 14px;
+                                        font-weight: 600;
+                                        line-height: 30px;">
+                                Color:</label>
+                            <select name="color" id="color-select">
+                                <?php
+                                foreach ($colors as $color) {
+                                    echo '<option value="' . $color . '">' . $color . '</option>';
+                                }
+                                ?>
+                            </select>
+                        </div>
+
+                        <div class="product-size">
+                            <label style="color: #838383; font-size: 14px;
+                                        font-weight: 600;
+                                        line-height: 30px;">
+                                Size :</label>
+                            <select name="size" id="size-select">
+                                <?php
+                                foreach ($sizes as $size) {
+                                    echo '<option value="' . $size . '">' . $size . '</option>';
+                                }
+                                ?>
+                            </select>
+                        </div>
+                        <div class="product-quantity">
+                            <div class="pro-qty">
+                                <input type="text" value="1">
+                            </div>
+                        </div>
+                        <button class="add-to-cart">Add to cart</button>
+                    </form>
+
                     <ul class="tags">
 
                         <li><span>Category: </span>
@@ -133,6 +186,8 @@ if (!$product_result) {
                             ?>
                         </li>
 
+
+
                         <li><span>Tags :</span> <?php
                                                 foreach ($result_variant as $v) {
                                                     if ($v['p_id'] == $info_product['pid']) {
@@ -142,17 +197,6 @@ if (!$product_result) {
                                                 ?></li>
 
 
-                    </ul>
-                    <div class="product-quantity">
-                        <div class="pro-qty">
-                            <input type="text" value="1">
-                        </div>
-                    </div>
-                    <a href="#" class="primary-btn pc-btn">Add to cart</a>
-                    <ul class="p-info">
-                        <li>Product Information</li>
-                        <li>Reviews</li>
-                        <li>Product Care</li>
                     </ul>
                 </div>
             </div>
@@ -166,60 +210,46 @@ if (!$product_result) {
     <div class="container">
         <div class="row">
             <div class="col-lg-12 text-center">
-                <div class="section-title">
-                    <h2>Related Products</h2>
-                </div>
+                <?php
+                $related_product_query = "SELECT * FROM product WHERE p_cat_id = $p_cat_id AND pid != $pid LIMIT 4";
+                $related_product_result = executeResult($related_product_query);
+
+                if (count($related_product_result) > 0) : ?>
+                    <h2 style="font-weight: 700">Related Products</h2>
+                <?php endif; ?>
             </div>
         </div>
         <div class="row">
-            <div class="col-lg-3 col-sm-6">
-                <div class="single-product-item">
-                    <figure>
-                        <a href="#"><img src="img/products/img-1.jpg" alt=""></a>
-                        <div class="p-status">new</div>
-                    </figure>
-                    <div class="product-text">
-                        <h6>Green Dress with details</h6>
-                        <p>$22.90</p>
+            <?php
+            foreach ($related_product_result as $related_product) {
+                $related_product_id = $related_product['pid'];
+
+                // Lấy thông tin hình ảnh từ bảng product_image
+                $image_query = "SELECT image_path FROM product_image WHERE pid = $related_product_id LIMIT 1";
+                $image_result = executeSingleResult($image_query);
+
+                // Kiểm tra xem có hình ảnh liên quan không
+                if ($image_result) {
+                    $related_product_image = $image_result['image_path'];
+                } else {
+                    $related_product_image = 'default_image.jpg'; // Hình ảnh mặc định nếu không có hình ảnh liên quan
+                }
+            ?>
+                <div class="col-lg-3 col-sm-6">
+                    <div class="single-product-item">
+                        <figure>
+                            <a href="product-page.php?pid=<?php echo $related_product_id ?>"><img src="<?php echo $related_product_image ?>" alt=""></a>
+                            <div class="p-status">NEW</div>
+                        </figure>
+                        <div class="product-text">
+                            <h6><?php echo $related_product['name'] ?></h6>
+                            <p>$<?php echo $related_product['price'] ?></p>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="col-lg-3 col-sm-6">
-                <div class="single-product-item">
-                    <figure>
-                        <a href="#"><img src="img/products/img-2.jpg" alt=""></a>
-                        <div class="p-status sale">sale</div>
-                    </figure>
-                    <div class="product-text">
-                        <h6>Yellow Maxi Dress</h6>
-                        <p>$25.90</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-3 col-sm-6">
-                <div class="single-product-item">
-                    <figure>
-                        <a href="#"><img src="img/products/img-3.jpg" alt=""></a>
-                        <div class="p-status">new</div>
-                    </figure>
-                    <div class="product-text">
-                        <h6>One piece bodysuit</h6>
-                        <p>$19.90</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-3 col-sm-6">
-                <div class="single-product-item">
-                    <figure>
-                        <a href="#"><img src="img/products/img-4.jpg" alt=""></a>
-                        <div class="p-status popular">popular</div>
-                    </figure>
-                    <div class="product-text">
-                        <h6>Blue Dress with details</h6>
-                        <p>$35.50</p>
-                    </div>
-                </div>
-            </div>
+            <?php
+            }
+            ?>
         </div>
     </div>
 </section>

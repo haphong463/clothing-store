@@ -125,7 +125,6 @@ $images = executeResult($sql_image);
                                                         <th scope="col">Size</th>
                                                         <th scope="col">Quantity</th>
                                                         <th scope="col">Description</th>
-                                                        <th scope="col">Active</th>
                                                         <th scope="col">Action</th>
                                                     </tr>
                                                 </thead>
@@ -169,9 +168,6 @@ $images = executeResult($sql_image);
                                                                 }
                                                                 ?>
                                                                 <td width="30%"><?php echo $p['description'] ?></td>
-                                                                <td>
-                                                                    <input type="checkbox" class="product-active" data-product-id="<?php echo $p['pid']; ?>" <?php echo ($p['active'] == 1) ? 'checked' : ''; ?>>
-                                                                </td>
                                                                 <td><a href="product-update.php?pid=<?php echo $p['pid'] ?>"><button class="btn btn-info">Edit</button></a> | <a href="process/category-delete.php?id=<?php echo $p['pid']; ?>"><button class="btn btn-danger">Delete</button></a> </td>
 
 

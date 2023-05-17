@@ -1,8 +1,12 @@
 <?php
 require_once('db/dbhelper.php');
 $sql = "SELECT * FROM product_category";
-$categories = executeResult($sql);
+$product_categories = executeResult($sql);
+
+$sql2 = "SELECT * FROM category";
+$product = executeResult($sql2);
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -44,11 +48,19 @@ $categories = executeResult($sql);
             color: white;
             background-color: black;
             font-weight: 600
-
         }
 
-        .hero-items .owl-nav button[type=button]{
+        .hero-items .owl-nav button[type=button] {
             background-color: transparent !important;
+        }
+
+        .single-product-item figure img.product-image{
+            height:250px;
+        }
+
+        .header-section{
+            padding-left: 0 ;
+            padding-right: 0 ;
         }
     </style>
 </head>
@@ -74,7 +86,7 @@ $categories = executeResult($sql);
         <div class="container-fluid">
             <div class="inner-header">
                 <div class="logo">
-                    <a href="./index.php"><img src="assets/img/logo.png" alt=""></a>
+                    <a href="./index.php"><img src="image/pl-removebg-preview.png" width="350px" height="64px" alt=""></a>
                 </div>
                 <div class="header-right">
                     <img src="assets/img/icons/search.png" alt="" class="search-trigger">
@@ -94,7 +106,17 @@ $categories = executeResult($sql);
                         <li><a href="./categories.php">Shop</a>
                             <ul class="sub-menu">
                                 <?php
-                                foreach ($categories as $c) {
+                                foreach ($product as $p) {
+                                ?>
+                                    <li><a href="categories.php?cat_id=<?php echo $p['cat_id'] ?>"><?php echo $p['cat_name'] ?></a></li>
+                                <?php
+                                }
+
+                                ?>
+                            </ul>
+                            <ul class="sub-menu" style="margin-left:100px">
+                                <?php
+                                foreach ($product_categories as $c) {
                                 ?>
                                     <li><a href="categories.php?p_cat_id=<?php echo $c['p_cat_id'] ?>"><?php echo $c['p_cat_name'] ?></a></li>
                                 <?php

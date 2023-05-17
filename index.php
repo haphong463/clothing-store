@@ -93,10 +93,10 @@ $p_category = executeResult($sql);
                 }
             ?>
 
-                <div class="col-lg-3 col-sm-6 mix all <?php echo $p_cat_name; ?>">
+                <div class="col-lg-6 col-sm-12 mix all <?php echo $p_cat_name; ?>">
                     <div class="single-product-item">
                         <figure>
-                            <a href="product-page.php?pid=<?php echo $pid ?>"><img src="<?php echo $imagePath ?>" width="300px" height="300px" alt=""></a>
+                            <a href="product-page.php?pid=<?php echo $pid ?>"><img src="<?php echo $imagePath ?>" height="500px" alt=""></a>
                             <div class="p-status">NEW</div>
                         </figure>
                         <div class="product-text">

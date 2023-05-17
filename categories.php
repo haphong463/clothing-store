@@ -2,14 +2,24 @@
 require_once('db/dbhelper.php');
 $sql = "SELECT * FROM Product";
 $p_cat_id = isset($_GET['p_cat_id']) ? $_GET['p_cat_id'] : null;
+$cat_id = isset($_GET['cat_id']) ? $_GET['cat_id'] : null;
+
 if ($p_cat_id) {
     $sql = "SELECT * FROM Product WHERE p_cat_id = $p_cat_id";
     $sql2 = "SELECT p_cat_name from product_category where p_cat_id = $p_cat_id";
     $p_cat = executeSingleResult($sql2);
+    $name = $p_cat['p_cat_name'];
+} elseif ($cat_id) {
+    // Nếu có cat_id, truy vấn các sản phẩm thuộc vào cat_id đó
+    $sql = "SELECT * FROM Product WHERE cat_id = $cat_id";
+    $sql2 = "SELECT cat_name from category where cat_id = $cat_id";
+    $cat = executeSingleResult($sql2);
+    $name = $cat['cat_name'];
 } else {
     $sql = "SELECT * FROM Product";
-    $p_cat = array('p_cat_name' => 'Shop');
+    $name = "Shop";
 }
+
 
 $products = executeResult($sql);
 $totalProducts = count($products); // Tổng số sản phẩm
@@ -34,9 +44,9 @@ $products = executeResult($sql);
         <div class="row">
             <div class="col-lg-4">
                 <div class="page-breadcrumb">
-                    <h2><?php echo $p_cat['p_cat_name'] ?><span>.</span></h2>
+                    <h2><?php echo $name ?><span>.</span></h2>
                     <a href="index.php">Home</a>
-                    <a href="categories.php"><?php echo $p_cat['p_cat_name'] ?></a>
+                    <a href="categories.php"><?php echo $name ?></a>
                 </div>
             </div>
             <div class="col-lg-8">
@@ -92,7 +102,7 @@ $products = executeResult($sql);
                 <div class="col-lg-3 col-md-6">
                     <div class="single-product-item">
                         <figure>
-                            <img src="<?php echo $imagePath; ?>" width="500px" height="300px" alt="">
+                            <img src="<?php echo $imagePath; ?>" class="product-image" alt="">
                             <div class="hover-icon">
                                 <a href="<?php echo $imagePath; ?>" class="pop-up"><img src="img/icons/zoom-plus.png" alt=""></a>
                             </div>

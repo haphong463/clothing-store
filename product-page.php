@@ -48,9 +48,36 @@ if (!$product_result) {
 <!-- Product Page Section Beign -->
 <section class="product-page">
     <div class="container">
+        <?php
+        $sql = "SELECT * FROM product";
+        $products = executeResult($sql);
+        $current_pid = isset($_GET['pid']) ? $_GET['pid'] : null; // Lấy pid hiện tại
+
+        $previous_pid = null; // Pid của sản phẩm trước đó
+        $next_pid = null; // Pid của sản phẩm tiếp theo
+
+        // Tìm vị trí của pid hiện tại trong danh sách sản phẩm
+        $current_product_index = -1;
+        foreach ($products as $index => $product) {
+            if ($product['pid'] == $current_pid) {
+                $current_product_index = $index;
+                break;
+            }
+        }
+
+        // Lấy pid của sản phẩm trước đó và tiếp theo
+        if ($current_product_index !== -1) {
+            $previous_pid = ($current_product_index > 0) ? $products[$current_product_index - 1]['pid'] : null;
+            $next_pid = ($current_product_index < count($products) - 1) ? $products[$current_product_index + 1]['pid'] : null;
+        }
+        ?>
         <div class="product-control">
-            <a href="product-page.php?pid=<?php echo $pid - 1 ?>">Previous</a>
-            <a href="product-page.php?pid=<?php echo $pid + 1 ?>">Next</a>
+            <?php if ($previous_pid !== null) { ?>
+                <a href="product-page.php?pid=<?php echo $previous_pid ?>">Previous</a>
+            <?php } ?>
+            <?php if ($next_pid !== null) { ?>
+                <a href="product-page.php?pid=<?php echo $next_pid ?>">Next</a>
+            <?php } ?>
         </div>
         <div class="row">
             <div class="col-lg-6">
@@ -115,9 +142,16 @@ if (!$product_result) {
                             <i class="fa fa-star"></i>
                         </div>
                     </div>
+
+
                     <?php
-                    echo $info_product['description'];
+                    $description = $info_product['description'];
+                    $description = str_replace('<ul>', '<ul style="color: #838383; font-size: 14px; font-weight: 500; line-height: 30px; margin-bottom: 35px; margin-left:15px">', $description);
+                    echo $description;
                     ?>
+
+
+
                     <?php
                     $sql_color_size = "SELECT DISTINCT color, size FROM product_variant WHERE p_id = $pid";
                     $result_color_size = executeSingleResult($sql_color_size);
@@ -162,7 +196,7 @@ if (!$product_result) {
                         </div>
                         <div class="product-quantity">
                             <div class="pro-qty">
-                                <input type="text" value="1">
+                                <input type="text" value="1" name="quantity">
                             </div>
                         </div>
                         <button class="add-to-cart">Add to cart</button>
@@ -238,7 +272,7 @@ if (!$product_result) {
                 <div class="col-lg-3 col-sm-6">
                     <div class="single-product-item">
                         <figure>
-                            <a href="product-page.php?pid=<?php echo $related_product_id ?>"><img src="<?php echo $related_product_image ?>" alt=""></a>
+                            <a href="product-page.php?pid=<?php echo $related_product_id ?>"><img src="<?php echo $related_product_image ?>" height="300px" alt=""></a>
                             <div class="p-status">NEW</div>
                         </figure>
                         <div class="product-text">

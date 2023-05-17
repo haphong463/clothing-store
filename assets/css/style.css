@@ -1345,13 +1345,14 @@ ol {
 	margin-right: 4px;
 }
 
-.product-content p {
+.product-content p{
 	color: #838383;
 	font-size: 14px;
 	font-weight: 500;
 	line-height: 30px;
 	margin-bottom: 35px;
 }
+
 
 .product-content .tags {
 	margin-bottom: 52px;

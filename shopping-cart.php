@@ -1,4 +1,6 @@
 <?php include('layout/header.php') ?>
+<!-- Header Info End -->
+<!-- Header End -->
 
 <!-- Page Add Section Begin -->
 <section class="page-add cart-page-add">

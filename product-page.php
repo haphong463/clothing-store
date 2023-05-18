@@ -133,7 +133,11 @@ if (!$product_result) {
                 <div class="product-content">
                     <h2><?php echo $info_product['name'] ?></h2>
                     <div class="pc-meta">
-                        <h5>$<?php echo $info_product['price'] ?></h5>
+                        <h5>
+                            <div class="price">
+                                <span>$<?php echo number_format($product_result['price'], 2, '.', '.') ?> </span>
+                            </div>
+                        </h5>
                         <div class="rating">
                             <i class="fa fa-star"></i>
                             <i class="fa fa-star"></i>
@@ -166,41 +170,43 @@ if (!$product_result) {
 
 
 
-                    <form action="">
-                        <div class="product-color">
-                            <label style="color: #838383; font-size: 14px;
+                    <div class="cart">
+                        <form action="shopping-cart.php?pid=<?php echo $pid ?>" method="post">
+                            <div class="product-color">
+                                <label style="color: #838383; font-size: 14px;
                                         font-weight: 600;
                                         line-height: 30px;">
-                                Color:</label>
-                            <select name="color" id="color-select">
-                                <?php
-                                foreach ($colors as $color) {
-                                    echo '<option value="' . $color . '">' . $color . '</option>';
-                                }
-                                ?>
-                            </select>
-                        </div>
-
-                        <div class="product-size">
-                            <label style="color: #838383; font-size: 14px;
-                                        font-weight: 600;
-                                        line-height: 30px;">
-                                Size :</label>
-                            <select name="size" id="size-select">
-                                <?php
-                                foreach ($sizes as $size) {
-                                    echo '<option value="' . $size . '">' . $size . '</option>';
-                                }
-                                ?>
-                            </select>
-                        </div>
-                        <div class="product-quantity">
-                            <div class="pro-qty">
-                                <input type="text" value="1" name="quantity">
+                                    Color:</label>
+                                <select name="color" id="color-select">
+                                    <?php
+                                    foreach ($colors as $color) {
+                                        echo '<option value="' . $color . '">' . $color . '</option>';
+                                    }
+                                    ?>
+                                </select>
                             </div>
-                        </div>
-                        <button class="add-to-cart">Add to cart</button>
-                    </form>
+
+                            <div class="product-size">
+                                <label style="color: #838383; font-size: 14px;
+                                        font-weight: 600;
+                                        line-height: 30px;">
+                                    Size :</label>
+                                <select name="size" id="size-select">
+                                    <?php
+                                    foreach ($sizes as $size) {
+                                        echo '<option value="' . $size . '">' . $size . '</option>';
+                                    }
+                                    ?>
+                                </select>
+                            </div>
+                            <div class="product-quantity">
+                                <div class="pro-qty">
+                                    <input type="text" value="1" name="quantity">
+                                </div>
+                            </div>
+                            <button class="add-to-cart">Add to cart</button>
+                        </form>
+                    </div>
 
                     <ul class="tags">
 
@@ -229,7 +235,6 @@ if (!$product_result) {
                                                     }
                                                 }
                                                 ?></li>
-
 
                     </ul>
                 </div>

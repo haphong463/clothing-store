@@ -68,21 +68,21 @@ $p_category = executeResult($sql);
         </div>
         <div class="row" id="product-list">
             <?php
-            $product_info = "SELECT product.*, product_image.image_path
+            $product_info = "SELECT product.*, product_thumbnail.thumbnail
                     FROM product
                     LEFT JOIN (
                         SELECT pid, MIN(id) AS min_id
-                        FROM product_image
+                        FROM product_thumbnail
                         GROUP BY pid
                     ) AS sub ON product.pid = sub.pid
-                    LEFT JOIN product_image ON sub.min_id = product_image.id LIMIT 8";
+                    LEFT JOIN product_thumbnail ON sub.min_id = product_thumbnail.id LIMIT 8";
             $resultInfo = executeResult($product_info);
 
             foreach ($resultInfo as $info) {
                 $pid = $info['pid'];
                 $name = $info['name'];
                 $price = $info['price'];
-                $imagePath = $info['image_path'];
+                $imagePath = $info['thumbnail'];
 
                 $p_cat_name = '';
                 foreach ($p_category as $c) {
@@ -93,20 +93,22 @@ $p_category = executeResult($sql);
                 }
             ?>
 
-                <div class="col-lg-6 col-sm-12 mix all <?php echo $p_cat_name; ?>">
+                <div class="col-lg-3 col-sm-12 mix all <?php echo $p_cat_name; ?>">
                     <div class="single-product-item">
                         <figure>
-                            <a href="product-page.php?pid=<?php echo $pid ?>"><img src="<?php echo $imagePath ?>" height="500px" alt=""></a>
+                            <a href="product-page.php?pid=<?php echo $pid ?>"><img src="<?php echo $imagePath ?>" alt=""></a>
                             <div class="p-status">NEW</div>
                         </figure>
                         <div class="product-text">
-                            <h6><?php echo $name ?></h6>
+                            <h6 style="font-size:1.5rem;"><?php echo $name ?></h6>
                             <p>$<?php echo $price ?></p>
                         </div>
                     </div>
                 </div>
             <?php
             }
+
+
             ?>
         </div>
 

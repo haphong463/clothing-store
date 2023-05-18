@@ -62,6 +62,13 @@ $product = executeResult($sql2);
             padding-left: 0 ;
             padding-right: 0 ;
         }
+        .product-img figure img{
+            height:55vh;
+        }
+
+        .inner-header .main-menu ul li .sub-menu{
+            height:30vh;
+        }
     </style>
 </head>
 

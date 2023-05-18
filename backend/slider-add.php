@@ -31,6 +31,11 @@
 
     <!-- App css-->
     <link rel="stylesheet" type="text/css" href="../assets/css/admin.css">
+    <style>
+        form {
+            width: 30%;
+        }
+    </style>
 </head>
 
 <body>
@@ -62,7 +67,7 @@
                         <div class="row">
                             <div class="col-lg-6">
                                 <div class="page-header-left">
-                                    <h3>NEW ONE CATEGORY
+                                    <h3>NEW ONE SLIDER
                                         <small>La Mode Parisienne</small>
                                     </h3>
                                 </div>

@@ -1,6 +1,5 @@
 <?php
 require_once('db/dbhelper.php');
-$sql = "SELECT * FROM Product";
 $p_cat_id = isset($_GET['p_cat_id']) ? $_GET['p_cat_id'] : null;
 $cat_id = isset($_GET['cat_id']) ? $_GET['cat_id'] : null;
 
@@ -23,7 +22,7 @@ if ($p_cat_id) {
 
 $products = executeResult($sql);
 $totalProducts = count($products); // Tổng số sản phẩm
-$limit = 12; // Số sản phẩm hiển thị trên mỗi trang
+$limit = 2; // Số sản phẩm hiển thị trên mỗi trang
 $totalPages = ceil($totalProducts / $limit); // Tổng số trang
 $currentPage = isset($_GET['page']) ? $_GET['page'] : 1; // Trang hiện tại
 
@@ -115,7 +114,9 @@ $products = executeResult($sql);
                         </div>
                     </div>
                 </div>
-            <?php } ?>
+            <?php
+            }
+            ?>
         </div>
         <div class="more-product">
             <div class="row">

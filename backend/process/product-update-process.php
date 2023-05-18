@@ -56,34 +56,9 @@ if (isset($_POST['update-product'])) {
         }
 
         // Tải lên và lưu các ảnh mới
-        foreach ($images['name'] as $index => $image_name) {
-            $target_file = $target_dir . basename($image_name);
-
-            // Xử lý tệp tin và lưu vào thư mục đích...
-            $upload_ok = 1;
-            $image_file_type = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
-
-            // Kiểm tra định dạng file ảnh
-            if (!in_array($image_file_type, ['jpg', 'png', 'avif', 'webp'])) {
-                echo 'Only JPG, AVIF, PNG, WEBP files are allowed';
-                $upload_ok = 0;
-            }
-
-            // Kiểm tra trùng tên ảnh
-            if (file_exists($target_file)) {
-                echo 'The file name already exists. Please change your file name!';
-                $upload_ok = 0;
-            }
-
-            // Lưu file ảnh
-            if ($upload_ok == 1) {
-                move_uploaded_file($images['tmp_name'][$index], $target_file);
-                $image_path = 'image/product/' . $image_name;
-                $sql_image = "INSERT INTO product_image (pid, image_path) VALUES ($id, '$image_path')";
-                execute($sql_image);
-            }
-        }
-
+       
+        $takeid = $product_id;
+        include('uploadImage.php');
         // Cập nhật thông tin biến thể sản phẩm trong bảng "Product Variant"
         $sql_variant = "UPDATE product_variant SET size = '$size', color = '$color', quantity = $quantity, keyword = '$keyword' WHERE p_id = $id";
         execute($sql_variant);

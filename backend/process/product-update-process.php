@@ -20,6 +20,8 @@ if (isset($_POST['update-product'])) {
     $sql = "UPDATE product SET cat_id = $category, p_cat_id = $type, name = '$name', price = $price, description = '$description', updated_at = NOW() WHERE pid = $id";
     execute($sql);
 
+
+
     // Kiểm tra xem người dùng đã tải lên ảnh mới hay chưa
     if (!empty($_FILES['image']['name'][0])) {
         // Lấy các đường dẫn hình ảnh cũ từ cơ sở dữ liệu
@@ -56,15 +58,16 @@ if (isset($_POST['update-product'])) {
         }
 
         // Tải lên và lưu các ảnh mới
-       
-        $takeid = $product_id;
+
+        $takeid = $id;
         include('uploadImage.php');
         // Cập nhật thông tin biến thể sản phẩm trong bảng "Product Variant"
-        $sql_variant = "UPDATE product_variant SET size = '$size', color = '$color', quantity = $quantity, keyword = '$keyword' WHERE p_id = $id";
-        execute($sql_variant);
+
 
         // Chuyển hướng về trang quản lý sản phẩm
 
     }
+    $sql_variant = "UPDATE product_variant SET size = '$size', color = '$color', quantity = $quantity, keyword = '$keyword' WHERE p_id = $id";
+    execute($sql_variant);
 }
 header('location: ../product.php');

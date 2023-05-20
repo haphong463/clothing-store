@@ -107,6 +107,10 @@ require_once '../db/dbhelper.php';
                         <input type="text" required class="form-control" name="color" id="color">
                     </div>
                     <div class="form-group">
+                        <label for="hex">Hex Code: </label>
+                        <input type="text" class="form-control" name="hex" id="hex" onblur="formatHexCode()">
+                    </div>
+                    <div class="form-group">
                         <label for="desc">Description: </label>
                         <textarea id="desc" name="desc"></textarea>
                     </div>
@@ -120,7 +124,7 @@ require_once '../db/dbhelper.php';
                 <!-- Container-fluid Ends-->
 
             </div>
-
+            
             <script>
                 tinymce.init({
                     selector: 'textarea#desc',

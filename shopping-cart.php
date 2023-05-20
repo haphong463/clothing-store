@@ -1,3 +1,38 @@
+<?php
+require_once 'db/dbhelper.php';
+
+if (isset($_POST['add-to-cart'])) {
+    $pid = $_POST['pid'];
+    $quantity = $_POST['quantity'];
+    $size = $_POST['size'];
+    $color = $_POST['color'];
+
+
+    $sql = "SELECT * FROM cart WHERE pid =$pid";
+    $existstingProduct = executeSingleResult($sql);
+
+    if ($existstingProduct) {
+        echo '<script>alert("Product Added")</script>';
+    } else {
+        $sql = "INSERT INTO cart (pid, quantity, size, color, date) VALUES ('$pid', '$quantity', '$size', '$color', NOW())";
+        execute($sql);
+
+        $sql = "SELECT cart.*, product.name, product.price, product_thumbnail.thumbnail 
+        FROM cart 
+        INNER JOIN product ON cart.pid = product.pid
+        INNER JOIN (
+            SELECT MIN(id) AS minID, thumbnail, pid
+            FROM product_thumbnail
+            GROUP BY pid
+        ) AS product_thumbnail ON product.pid = product_thumbnail.pid";
+        $cartItems = executeResult($sql);
+    }
+}
+
+
+
+?>
+
 <?php include('layout/header.php') ?>
 <!-- Header Info End -->
 <!-- Header End -->
@@ -37,22 +72,34 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td class="product-col">
-                            <img src="img/product/product-1.jpg" alt="">
-                            <div class="p-title">
-                                <h5>Blue Dotted Shirt</h5>
-                            </div>
-                        </td>
-                        <td class="price-col">$29</td>
-                        <td class="quantity-col">
-                            <div class="pro-qty">
-                                <input type="text" value="1">
-                            </div>
-                        </td>
-                        <td class="total">$29</td>
-                        <td class="product-close">x</td>
-                    </tr>
+                    <?php
+                    if (isset($cartItems) && !empty($cartItems)) :
+                        foreach ($cartItems as $cartItem) : ?>
+                            <tr>
+                                <td class="product-col">
+                                    <img src="<?php echo $cartItem['thumbnail'] ?>" alt="">
+                                    <div class="p-title">
+                                        <h5><?php echo $cartItem['name'] ?></h5>
+                                    </div>
+                                </td>
+                                <td class="price-col"><?php echo $cartItem['price'] ?></td>
+                                <td class="quantity-col">
+                                    <div class="pro-qty">
+                                        <input type="text" value="1">
+                                    </div>
+                                </td>
+                                <td class="total">$29</td>
+                                <td class="product-close">x</td>
+                            </tr>
+                        <?php
+                        endforeach;
+                    else :
+
+                        ?>
+                        <p>No product to display!</p>
+                    <?php
+                    endif
+                    ?>
                 </tbody>
             </table>
         </div>

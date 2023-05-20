@@ -1,5 +1,8 @@
 <?php
 require_once('db/dbhelper.php');
+
+
+
 if (!isset($_GET['pid']) || !is_numeric($_GET['pid'])) {
     header("Location: index.php"); // Chuyển hướng về trang index.php
     exit(); // Kết thúc thực thi mã
@@ -22,6 +25,8 @@ if (!$product_result) {
     header("Location: index.php"); // Chuyển hướng về trang index.php
     exit(); // Kết thúc thực thi mã
 }
+
+
 ?>
 
 <?php include('layout/header.php') ?>
@@ -170,43 +175,65 @@ if (!$product_result) {
 
 
 
-                    <div class="cart">
-                        <form action="shopping-cart.php?pid=<?php echo $pid ?>" method="post">
-                            <div class="product-color">
-                                <label style="color: #838383; font-size: 14px;
-                                        font-weight: 600;
-                                        line-height: 30px;">
-                                    Color:</label>
-                                <select name="color" id="color-select">
-                                    <?php
-                                    foreach ($colors as $color) {
-                                        echo '<option value="' . $color . '">' . $color . '</option>';
+
+                    <form action="shopping-cart.php" method="post">
+                        <input type="hidden" name="pid" value="<?php echo $pid; ?>">
+                        <div class="product-color">
+                            <?php
+                            $firstColor = reset($colors);
+                            foreach ($colors as $color) {
+                            ?>
+                                <label class="square-radio">
+                                    <input type="radio" name="color" value="<?php echo $color ?>" <?php if ($color == $firstColor) {
+                                                                                                        echo "checked";
+                                                                                                    } ?>>
+                                    <span style="background-color:#333;"><span>
+                                </label>
+                            <?php
+                            }
+                            ?>
+                        </div>
+
+
+                        <div class="form-group">
+                            <!-- form-group Begin -->
+                            <div class='pd-size-choose'>
+                                <?php
+                                $firstSize = reset($sizes);
+                                foreach ($sizes as $size) {
+                                    $trimSize = trim($size);
+                                    $value = '';
+                                    if ($trimSize == "M") {
+                                        $value = "Medium";
+                                    } elseif ($trimSize == "S") {
+                                        $value = "Small";
+                                    } elseif ($trimSize == "L") {
+                                        $value = "Large";
+                                    } else if ($trimSize == "XL") {
+                                        $value = "Extra Large";
                                     }
-                                    ?>
-                                </select>
+
+                                ?>
+                                    <div class='sc-item'>
+                                        <input type='radio' id='<?php echo $trimSize ?>-size' class="form-control" name='size' value="<?php echo $value ?>" <?php if ($trimSize == $firstSize) {
+                                                                                                                                                                echo "checked";
+                                                                                                                                                            } ?> required novalidate>
+                                        <label for='<?php echo $trimSize ?>-size'><?php echo $trimSize ?></label>
+                                    </div>
+                                <?php
+                                }
+                                ?>
                             </div>
 
-                            <div class="product-size">
-                                <label style="color: #838383; font-size: 14px;
-                                        font-weight: 600;
-                                        line-height: 30px;">
-                                    Size :</label>
-                                <select name="size" id="size-select">
-                                    <?php
-                                    foreach ($sizes as $size) {
-                                        echo '<option value="' . $size . '">' . $size . '</option>';
-                                    }
-                                    ?>
-                                </select>
-                            </div>
-                            <div class="product-quantity">
-                                <div class="pro-qty">
-                                    <input type="text" value="1" name="quantity">
-                                </div>
-                            </div>
-                            <button class="add-to-cart">Add to cart</button>
-                        </form>
-                    </div>
+                        </div>
+
+                        <div class="pro-quantity">
+                            <button type="button" class="quantity" onclick="decrement()">-</button>
+                            <input type="number" id="quantity" name="quantity" min="1" value="1">
+                            <button type="button" class="quantity" onclick="increment()">+</button>
+                        </div>
+                        <button name="add-to-cart" class="add">Add to cart</button>
+                    </form>
 
                     <ul class="tags">
 
@@ -295,4 +322,20 @@ if (!$product_result) {
 <!-- Related Product Section End -->
 
 <!-- Footer Section Begin -->
+
+<script>
+    function decrement() {
+        var quantityInput = document.getElementById('quantity');
+        var currentValue = parseInt(quantityInput.value);
+        if (currentValue > 1) {
+            quantityInput.value = currentValue - 1;
+        }
+    }
+
+    function increment() {
+        var quantityInput = document.getElementById('quantity');
+        var currentValue = parseInt(quantityInput.value);
+        quantityInput.value = currentValue + 1;
+    }
+</script>
 <?php include('layout/footer.php') ?>

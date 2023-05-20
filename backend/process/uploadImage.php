@@ -28,7 +28,7 @@ function uploadImages($uploadedImages, $takeid)
             //up file vật lý
             move_uploaded_file($file["tmp_name"], $uploadPath . '/' . $file['name']);
             //lưu đường dẫn vào db
-            $image = 'image/product/'  . '/' . $file['name'] . '';
+            $image = 'image/product/'  . $file['name'] . '';
             $sql = 'insert into product_image(pid, image_path) values (' . $takeid . ',"' . $image . '")';
             execute($sql);
             //tạo thumbnail
@@ -38,7 +38,7 @@ function uploadImages($uploadedImages, $takeid)
             //up file vật lý thumnail
             $resize->saveImage($uploadPathThumb . '/' . $file['name']);
             //luu đường dẫn vào db
-            $thumbnail = 'image/product/thumbnail/' . '/' . $file['name'] . '';
+            $thumbnail = 'image/product/thumbnail/' . $file['name'] . '';
             $sql = 'insert into product_thumbnail(pid, thumbnail) values (' . $takeid . ',"' . $thumbnail . '")';
             execute($sql);
         } else {

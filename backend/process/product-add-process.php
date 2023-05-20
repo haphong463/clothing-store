@@ -5,13 +5,12 @@
         $category = $_POST['cat_id'];
         $type = $_POST['p_cat_id'];
         $description = $_POST['desc'];
-        $color = $_POST['color'];
-        $size = $_POST['size'];
-        $price = $_POST['price'];
+        $colors = $_POST['color'];
+        $sizes = $_POST['size'];
+        $price = number_format($_POST['price'], '2', '.');
         $keyword = $_POST['keyword'];
-        $quantity = $_POST['quantity'];
-
-        $target_dir = "../../image/product/";
+        $quantity = intval($_POST['quantity']);
+        $hexs = $_POST['hex'];
         $images = $_FILES['image'];
         $desc = addslashes($description);
 
@@ -43,7 +42,23 @@
         $takeid = $product_id;
         include('uploadImage.php');
 
-        $sql_variant = "INSERT INTO product_variant (p_id, size, color, quantity, keyword) VALUES ($product_id, '$size', '$color', $quantity, '$keyword')";
+        $sql_variant = "INSERT INTO product_variant (p_id, size, color, quantity, keyword) 
+                                VALUES ($product_id, '$sizes', '$colors', $quantity, '$keyword')";
         execute($sql_variant);
+
+
+        $color_array = explode(',', $colors);
+        $hex_array = explode(',', $hexs);
+        
+        $count = min(count($color_array), count($hex_array)); // Đảm bảo số lượng phần tử bằng nhau
+        
+        for ($i = 0; $i < $count; $i++) {
+            $color = trim($color_array[$i]);
+            $hex = trim($hex_array[$i]);
+        
+            $sql_color = "INSERT INTO color (pid, color_name, hex) VALUES ($product_id, '$color', '$hex')";
+            execute($sql_color);
+        }
+        
         header('location: ../product.php');
     }

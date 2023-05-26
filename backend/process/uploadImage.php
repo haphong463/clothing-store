@@ -50,7 +50,6 @@ function uploadImages($uploadedImages, $takeid)
 $errors = uploadImages($uploadedImages, $takeid);
 if (!empty($errors)) {
     print_r($errors);
-    header("Location: add.php?id=$takeid");
 }
 
 

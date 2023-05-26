@@ -1,9 +1,14 @@
 <?php
 require_once '../db/dbhelper.php';
+
 if (isset($_GET['pid'])) {
     $id = $_GET['pid'];
     $products = "SELECT * FROM product where pid = $id";
     $result = executeSingleResult($products);
+
+    if (!$result) {
+        header('Location: index.php');
+    }
 }
 ?>
 
@@ -58,9 +63,9 @@ if (isset($_GET['pid'])) {
 
                 <!-- Container-fluid starts-->
 
-                <form action="process/product-update-process.php" method="post" enctype="multipart/form-data">
+                <form action="process/product-update-process.php" method="post" class="row" enctype="multipart/form-data">
                     <input type="hidden" name="pid" value="<?php echo $id ?>">
-                    <div class="form-group">
+                    <div class="form-group col-md-6">
                         <label for="">Category: </label>
                         <select name="cat_id" id="" required class="form-control">
                             <?php
@@ -76,7 +81,7 @@ if (isset($_GET['pid'])) {
                             ?>
                         </select>
                     </div>
-                    <div class="form-group">
+                    <div class="form-group col-md-6">
                         <label for="image">Type: </label>
                         <select name="p_cat_id" id="" required class="form-control">
                             <?php
@@ -92,48 +97,86 @@ if (isset($_GET['pid'])) {
                         </select>
                     </div>
 
-                    <div class="form-group">
+                    <div class="form-group col-md-3">
                         <label for="name">Product Name</label>
                         <input type="text" value="<?php echo $result['name'] ?>" required class="form-control" id="name" name="name">
                     </div>
-                    <div class="form-group">
+                    <div class="form-group col-md-3">
                         <label for="price">Price: </label>
                         <input type="text" value="<?php echo $result['price'] ?>" required class="form-control" id="price" name="price">
                     </div>
 
                     <?php
-                    $sql_variant = "SELECT * FROM product_variant where p_id = $id";
-                    $variants = executeResult($sql_variant);
-                    foreach ($variants as $variant) {
+                    $sql_size = "SELECT * FROM product_size WHERE pid = $id";
+                    $sql_quantity = "SELECT DISTINCT quantity FROM product_quantity WHERE pid = $id";
 
+                    $sizes = executeResult($sql_size);
+                    $quantities = executeResult($sql_quantity);
+
+                    $size_string = '';
+                    $quantity_string = '';
+
+                    $quantity_array = array();
+                    $size_array = array();
+                    foreach ($quantities as $quantity) {
+                        $quantity_array[] = $quantity['quantity'];
+                    }
+
+                    $quantity_string .= implode(', ', $quantity_array);
+
+                    foreach ($sizes as $size) {
+                        $size_array[] = $size['size'];
+                    }
+
+                    $size_string .= implode(', ', $size_array);
                     ?>
+                    <div class="form-group col-md-3">
+                        <label for="size">Size: </label>
+                        <input type="text" value="<?php echo $size_string ?>" required class="form-control" id="size" name="size">
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label for="quantity">Quantity: </label>
+                        <input type="text" value="<?php echo $quantity_string ?>" required class="form-control" id="quantity" name="quantity">
+                    </div>
+                    <?php
+                    $sql_variant = "SELECT keyword FROM product_variant where p_id = $id";
+                    $variants = executeSingleResult($sql_variant);
+                    ?>
+                    <div class="form-group col-md-4">
+                        <label for="keyword">Keyword: </label>
+                        <input type="text" value="<?php echo $variants['keyword'] ?>" class="form-control" id="keyword" name="keyword">
+                    </div>
 
-                        <div class="form-group">
-                            <label for="size">Size: </label>
-                            <input type="text" value="<?php echo $variant['size'] ?>" required class="form-control" id="size" name="size">
-                        </div>
-                        <div class="form-group">
-                            <label for="quantity">Quantity: </label>
-                            <input type="text" value="<?php echo $variant['quantity'] ?>" required class="form-control" id="quantity" name="quantity">
-                        </div>
-                        <div class="form-group">
-                            <label for="keyword">Keyword: </label>
-                            <input type="text" value="<?php echo $variant['keyword'] ?>" class="form-control" id="keyword" name="keyword">
-                        </div>
-                        <div class="form-group">
-                            <label for="color">Color: </label>
-                            <input type="text" value="<?php echo $variant['color'] ?>" required class="form-control" name="color" id="color">
-                        </div>
 
                     <?php
-                    }
-                    ?>
+                    $colors = array();
+                    $hexes = array();
 
+                    $sql_color = "SELECT * FROM product_color where pid = $id";
+                    $colors_result = executeResult($sql_color);
+
+                    foreach ($colors_result as $color) {
+                        $colors[] = $color['color_name'];
+                        $hexes[] = $color['hex'];
+                    }
+
+                    $color_string = implode(', ', $colors);
+                    $hex_string = implode(', ', $hexes);
+                    ?>
+                    <div class="form-group col-md-4">
+                        <label for="color">Color: </label>
+                        <input type="text" value="<?php echo $color_string ?>" required class="form-control" name="color" id="color">
+                    </div>
+
+                    <div class="form-group col-md-4">
+                        <label for="hex">Hex Code: </label>
+                        <input type="text" class="form-control" value="<?php echo $hex_string ?>" name="hex" id="hex">
+                    </div>
                     <div class="form-group">
                         <label for="desc">Description: </label>
                         <textarea id="desc" name="desc"><?php echo $result['description'] ?></textarea>
                     </div>
-                    <div class="form-group">
+                    <div class="form-group ml-">
                         <label for="image">Product Image: </label>
                         <input type="file" class="form-control" id="image" name="image[]" multiple>
                         <div class="row">

@@ -52,10 +52,10 @@ require_once '../db/dbhelper.php';
                 <!-- Container-fluid Ends-->
 
                 <!-- Container-fluid starts-->
-                <form action="process/product-add-process.php" method="post" enctype="multipart/form-data">
-                    <div class="form-group">
-                        <label for="">Category: </label>
-                        <select name="cat_id" id="" required class="form-control">
+                <form action="process/product-add-process.php" method="post" class="row" enctype="multipart/form-data">
+                    <div class="form-group col-md-6">
+                        <label for="cat_id">Category: </label>
+                        <select name="cat_id" id="cat_id" required class="form-control">
                             <?php
                             $sql = "SELECT * FROM category";
                             $categories = executeResult($sql);
@@ -67,9 +67,9 @@ require_once '../db/dbhelper.php';
                             ?>
                         </select>
                     </div>
-                    <div class="form-group">
-                        <label for="image">Type: </label>
-                        <select name="p_cat_id" id="" required class="form-control">
+                    <div class="form-group col-md-6">
+                        <label for="p_cat_id">Type: </label>
+                        <select name="p_cat_id" id="p_cat_id" required class="form-control">
                             <?php
                             $sql = "SELECT * FROM product_category";
                             $type = executeResult($sql);
@@ -82,33 +82,33 @@ require_once '../db/dbhelper.php';
                         </select>
                     </div>
 
-                    <div class="form-group">
+                    <div class="form-group col-md-3">
                         <label for="name">Product Name</label>
                         <input type="text" required class="form-control" id="name" name="name">
                     </div>
-                    <div class="form-group">
+                    <div class="form-group col-md-3">
                         <label for="price">Price: </label>
                         <input type="text" required class="form-control" id="price" name="price">
                     </div>
-                    <div class="form-group">
+                    <div class="form-group col-md-3">
                         <label for="size">Size: </label>
                         <input type="text" required class="form-control" id="size" name="size">
                     </div>
-                    <div class="form-group">
+                    <div class="form-group col-md-3">
                         <label for="quantity">Quantity: </label>
                         <input type="text" required class="form-control" id="quantity" name="quantity">
                     </div>
-                    <div class="form-group">
+                    <div class="form-group col-md-4">
                         <label for="keyword">Keyword: </label>
                         <input type="text" class="form-control" id="keyword" name="keyword">
                     </div>
-                    <div class="form-group">
+                    <div class="form-group col-md-4">
                         <label for="color">Color: </label>
                         <input type="text" required class="form-control" name="color" id="color">
                     </div>
-                    <div class="form-group">
+                    <div class="form-group col-md-4">
                         <label for="hex">Hex Code: </label>
-                        <input type="text" class="form-control" name="hex" id="hex" onblur="formatHexCode()">
+                        <input type="text" class="form-control" name="hex" id="hex">
                     </div>
                     <div class="form-group">
                         <label for="desc">Description: </label>
@@ -124,7 +124,7 @@ require_once '../db/dbhelper.php';
                 <!-- Container-fluid Ends-->
 
             </div>
-            
+
             <script>
                 tinymce.init({
                     selector: 'textarea#desc',

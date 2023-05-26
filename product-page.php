@@ -42,9 +42,9 @@ if (!$product_result) {
                     <a href="categories.php?p_cat_id=<?php echo $p_cat_id ?>"><?php echo $p_cat_result['p_cat_name'] ?></a>
                 </div>
             </div>
-            <div class="col-lg-8">
-                <img src="img/add.jpg" alt="">
-            </div>
+            <?php
+                include ('layout/discount.php');
+            ?>
         </div>
     </div>
 </section>
@@ -162,14 +162,14 @@ if (!$product_result) {
 
 
                     <?php
-                    $sql_color_size = "SELECT DISTINCT color, size FROM product_variant WHERE p_id = $pid";
-                    $result_color_size = executeSingleResult($sql_color_size);
 
-                    $colorString = $result_color_size['color']; // Chuỗi màu sắc (ví dụ: "white,black,yellow")
-                    $sizeString = $result_color_size['size'];
 
-                    $sizes = explode(',', $sizeString);
-                    $colors = explode(',', $colorString); // Chuyển chuỗi thành mảng các màu sắc
+                    $size_query = "SELECT size FROM product_size WHERE pid = $pid";
+                    $size_result = executeResult($size_query);
+
+                    $sql_color_hex = "SELECT * FROM product_color where pid = $pid";
+                    $color_hex = executeResult($sql_color_hex);
+
                     ?>
 
 
@@ -178,18 +178,21 @@ if (!$product_result) {
 
                     <form action="shopping-cart.php" method="post">
                         <input type="hidden" name="pid" value="<?php echo $pid; ?>">
+                        <div id="selected-color"></div>
                         <div class="product-color">
                             <?php
-                            $firstColor = reset($colors);
-                            foreach ($colors as $color) {
+                            foreach ($color_hex as $hex) {
+                                $firstColor = $color_hex[0]['color_name'];
+
                             ?>
                                 <label class="square-radio">
-                                    <input type="radio" name="color" value="<?php echo $color ?>" <?php if ($color == $firstColor) {
-                                                                                                        echo "checked";
-                                                                                                    } ?>>
-                                    <span style="background-color:#333;"><span>
+                                    <input type="radio" name="color" value="<?php echo $hex['color_name'] ?>" <?php if ($firstColor == $hex['color_name']) {
+                                                                                                                    echo 'checked';
+                                                                                                                } ?>>
+                                    <span style="background-color:<?php echo $hex['hex'] ?>;"><span>
                                 </label>
                             <?php
+
                             }
                             ?>
                         </div>
@@ -199,26 +202,26 @@ if (!$product_result) {
                             <!-- form-group Begin -->
                             <div class='pd-size-choose'>
                                 <?php
-                                $firstSize = reset($sizes);
-                                foreach ($sizes as $size) {
-                                    $trimSize = trim($size);
+                                foreach ($size_result as $size) {
+                                    $firstSize = $size_result[0]['size'];
+
                                     $value = '';
-                                    if ($trimSize == "M") {
+                                    if ($size['size'] == "M") {
                                         $value = "Medium";
-                                    } elseif ($trimSize == "S") {
+                                    } elseif ($size['size'] == "S") {
                                         $value = "Small";
-                                    } elseif ($trimSize == "L") {
+                                    } elseif ($size['size'] == "L") {
                                         $value = "Large";
-                                    } else if ($trimSize == "XL") {
+                                    } else if ($size['size'] == "XL") {
                                         $value = "Extra Large";
                                     }
 
                                 ?>
                                     <div class='sc-item'>
-                                        <input type='radio' id='<?php echo $trimSize ?>-size' class="form-control" name='size' value="<?php echo $value ?>" <?php if ($trimSize == $firstSize) {
-                                                                                                                                                                echo "checked";
-                                                                                                                                                            } ?> required novalidate>
-                                        <label for='<?php echo $trimSize ?>-size'><?php echo $trimSize ?></label>
+                                        <input type='radio' id='<?php echo $size['size'] ?>-size' class="form-control" name='size' value="<?php echo $value ?>" <?php if ($size['size'] == $firstSize) {
+                                                                                                                                                                    echo "checked";
+                                                                                                                                                                } ?> required novalidate>
+                                        <label for='<?php echo $size['size'] ?>-size'><?php echo $size['size'] ?></label>
                                     </div>
                                 <?php
                                 }
@@ -232,7 +235,17 @@ if (!$product_result) {
                             <input type="number" id="quantity" name="quantity" min="1" value="1">
                             <button type="button" class="quantity" onclick="increment()">+</button>
                         </div>
-                        <button name="add-to-cart" class="add">Add to cart</button>
+                        <?php
+                        if (isset($_SESSION['c_username_email'])) {
+                        ?>
+                            <button name="add-to-cart" class="add">Add to cart</button>
+                        <?php
+                        } else {
+                        ?>
+                            <button class="add"><a href="signin.php">Add to cart</a></button>
+                        <?php
+                        }
+                        ?>
                     </form>
 
                     <ul class="tags">
@@ -322,6 +335,29 @@ if (!$product_result) {
 <!-- Related Product Section End -->
 
 <!-- Footer Section Begin -->
+<script>
+    var colorInputs = document.querySelectorAll('input[name="color"]');
+    var selectedColorElement = document.getElementById('selected-color');
+
+    // Lấy thông tin màu và tên màu đầu tiên
+    var firstColor = colorInputs[0].value;
+    var firstColorHex = colorInputs[0].nextElementSibling.style.backgroundColor;
+    var firstColorStyle = 'color: ' + firstColorHex + ';';
+
+    // Hiển thị màu và tên màu đầu tiên ban đầu
+    selectedColorElement.innerHTML = 'Color: <span style="' + firstColorStyle + '">' + firstColor + '</span>';
+
+    for (var i = 0; i < colorInputs.length; i++) {
+        colorInputs[i].addEventListener('change', function() {
+            var selectedColor = this.value;
+            var selectedColorHex = this.nextElementSibling.style.backgroundColor;
+            var selectedColorStyle = 'color: ' + selectedColorHex + ';';
+
+            selectedColorElement.innerHTML = 'Color: <span style="' + selectedColorStyle + '">' + selectedColor + '</span>';
+        });
+    }
+</script>
+
 
 <script>
     function decrement() {

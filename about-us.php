@@ -7,9 +7,9 @@
                     <h2>About Us<span>.</span></h2>
                 </div>
             </div>
-            <div class="col-lg-8">
-                <img src="img/add.jpg" alt="">
-            </div>
+            <?php
+                include ('layout/discount.php');
+            ?>
         </div>
     </div>
 </section>

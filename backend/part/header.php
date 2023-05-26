@@ -34,12 +34,9 @@
     <script src="https://cdn.tiny.cloud/1/lb341tist71xbnurq70xnlwe3u5as3iqfrkzlgo3fw99zy6k/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
 
     <style>
-        form {
-            width: 30%;
-        }
-        .product-physical{
-            max-height:50vh;
-            overflow:auto;
+        .product-physical {
+            max-height: 50vh;
+            overflow: auto;
         }
     </style>
 </head>

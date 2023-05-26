@@ -22,7 +22,7 @@ if ($p_cat_id) {
 
 $products = executeResult($sql);
 $totalProducts = count($products); // Tổng số sản phẩm
-$limit = 2; // Số sản phẩm hiển thị trên mỗi trang
+$limit = 12; // Số sản phẩm hiển thị trên mỗi trang
 $totalPages = ceil($totalProducts / $limit); // Tổng số trang
 $currentPage = isset($_GET['page']) ? $_GET['page'] : 1; // Trang hiện tại
 
@@ -48,9 +48,9 @@ $products = executeResult($sql);
                     <a href="categories.php"><?php echo $name ?></a>
                 </div>
             </div>
-            <div class="col-lg-8">
-                <img src="img/add.jpg" alt="">
-            </div>
+            <?php
+                include ('layout/discount.php');
+            ?>
         </div>
     </div>
 </section>

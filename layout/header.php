@@ -1,5 +1,6 @@
 <?php
 session_start();
+
 require_once('db/dbhelper.php');
 $sql = "SELECT * FROM product_category";
 $product_categories = executeResult($sql);
@@ -106,7 +107,8 @@ $product = executeResult($sql2);
             cursor: pointer;
         }
 
-        button.add {
+        button.add,
+        button.add a {
             color: #fff;
             background-color: #333;
             border-radius: 10px;
@@ -115,6 +117,7 @@ $product = executeResult($sql2);
             padding: 8px 12px;
             margin: 15px 0;
         }
+
 
         .pd-size-choose {
             margin-bottom: 30px;
@@ -251,6 +254,63 @@ $product = executeResult($sql2);
             background: #9f9f9f;
             content: "";
         }
+
+        .inner-header .header-right .main-menu ul li {
+            margin-left: 23px;
+        }
+
+        .inner-header .header-right .main-menu {
+            margin-right: 150px;
+        }
+
+        .inner-header .header-right .main-menu ul li .sub-menu {
+            text-align: Center;
+            height: 15vh;
+        }
+
+        .inner-header .header-right .main-menu ul li .sub-menu button.details {
+            background-color: #333;
+            margin-bottom: 20px;
+        }
+
+        .inner-header .header-right .main-menu ul li .sub-menu button.details a {
+            color: white;
+        }
+
+
+        .inner-header .header-right .main-menu ul li .sub-menu button.out {
+            background-color: #fff;
+            padding: 0 30px;
+        }
+
+        .inner-header .header-right .main-menu ul li .sub-menu button.out a {
+            color: #333;
+        }
+
+
+
+        input.site-btn.cupone {
+            background-color: #333;
+            color: #fff;
+            margin-top: 15px;
+            font-weight: 700;
+            border: 0;
+        }
+
+        input.site-btn.cupone:hover {
+            transition: .5s;
+            background-color: transparent;
+            color: #333;
+        }
+
+        .select-more {
+            border: 1px solid #333;
+            padding: 10px;
+        }
+
+        a.select-more {
+            color: #333;
+        }
     </style>
 </head>
 
@@ -277,61 +337,96 @@ $product = executeResult($sql2);
                 <div class="logo">
                     <a href="./index.php"><img src="image/logo.png" alt=""></a>
                 </div>
-                <?php
+                <div class="header-right">
+                    <div class="main-menu mobile-menu">
+                        <ul>
+                            <li>
+                                <img src="assets/img/icons/search.png" alt="" class="search-trigger">
+                            </li>
+                            <?php
 
-                // Kiểm tra sự tồn tại của session email hoặc username
-                if (isset($_SESSION['email']) || isset($_SESSION['username'])) {
-                    // Hiển thị phần header-right
-                ?>
-                    <div class="header-right">
-                        <img src="assets/img/icons/search.png" alt="" class="search-trigger">
-                        <img src="assets/img/icons/man.png" alt="">
-                        <a href="shopping-cart.php">
-                            <img src="assets/img/icons/bag.png" alt="">
-                            <span>0</span>
-                        </a>
+                            // Kiểm tra sự tồn tại của session email hoặc username
+                            if (isset($_SESSION['c_username_email'])) {
+                                $c_id = $_SESSION['c_username_email'];
+                                // Hiển thị phần header-right
+                            ?>
+
+
+                                <li><?php echo $c_id['username'] ?></li>
+
+                                <li>
+                                    <a href="./details.php"><img src="assets/img/icons/man.png" alt="">
+                                    </a>
+                                    <ul class="sub-menu">
+                                        <li><button class="details"><a href="./details.php">My account</a></button></li>
+                                        <li><button class="out"><a href="./logout.php">Log out</a></button></li>
+
+                                    </ul>
+                                </li>
+                                <li>
+                                    <a href="shopping-cart.php">
+                                        <img src="assets/img/icons/bag.png" alt="">
+                                        <?php
+                                        $username = $c_id['username'];
+                                        $email = $c_id['email'];
+                                        $cart = "SELECT count(pid) as amount FROM cart WHERE c_id = '$email' or c_id = '$username' ";
+                                        $count_cart = executeSingleResult($cart);
+
+                                        ?>
+                                        <span>
+                                            <?php echo $count_cart['amount']; ?>
+                                        </span>
+                                    </a>
+                                </li>
+                        </ul>
+
                     </div>
-                <?php
-                }
-                ?>
+
+                </div>
+            <?php
+                            } else {
+            ?>
                 <div class="user-access">
                     <a href="register.php">Register</a>
-                    <a href="#" class="in">Sign in</a>
+                    <a href="signin.php" class="in">Sign in</a>
                 </div>
-                <nav class="main-menu mobile-menu">
-                    <ul>
-                        <li><a class="active" href="./index.php">Home</a></li>
-                        <li><a href="./categories.php">Shop</a>
-                            <ul class="sub-menu">
-                                <?php
-                                foreach ($product as $p) {
-                                ?>
-                                    <li><a href="categories.php?cat_id=<?php echo $p['cat_id'] ?>"><?php echo $p['cat_name'] ?></a></li>
-                                <?php
-                                }
+            <?php
+                            }
+            ?>
+            <nav class="main-menu mobile-menu">
+                <ul>
+                    <li><a class="active" href="./index.php">Home</a></li>
+                    <li><a href="./categories.php">Shop</a>
+                        <ul class="sub-menu">
+                            <?php
+                            foreach ($product as $p) {
+                            ?>
+                                <li><a href="categories.php?cat_id=<?php echo $p['cat_id'] ?>"><?php echo $p['cat_name'] ?></a></li>
+                            <?php
+                            }
 
-                                ?>
-                            </ul>
-                            <ul class="sub-menu" style="margin-left:100px">
-                                <?php
-                                foreach ($product_categories as $c) {
-                                ?>
-                                    <li><a href="categories.php?p_cat_id=<?php echo $c['p_cat_id'] ?>"><?php echo $c['p_cat_name'] ?></a></li>
-                                <?php
-                                }
+                            ?>
+                        </ul>
+                        <ul class="sub-menu" style="margin-left:100px">
+                            <?php
+                            foreach ($product_categories as $c) {
+                            ?>
+                                <li><a href="categories.php?p_cat_id=<?php echo $c['p_cat_id'] ?>"><?php echo $c['p_cat_name'] ?></a></li>
+                            <?php
+                            }
 
-                                ?>
-                            </ul>
-                        </li>
-                        <li><a href="./about-us.php">About</a></li>
-                        <li><a href="./contact.php">Contact</a></li>
-                    </ul>
-                </nav>
+                            ?>
+                        </ul>
+                    </li>
+                    <li><a href="./about-us.php">About</a></li>
+                    <li><a href="./contact.php">Contact</a></li>
+                </ul>
+            </nav>
             </div>
         </div>
     </header>
     <!-- Header Info Begin -->
-    <div class="header-info">
+    <!-- <div class="header-info">
         <div class="container-fluid">
             <div class="row">
                 <div class="col-md-4">
@@ -354,6 +449,6 @@ $product = executeResult($sql2);
                 </div>
             </div>
         </div>
-    </div>
+    </div> -->
     <!-- Header Info End -->
     <!-- Header End -->

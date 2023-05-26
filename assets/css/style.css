@@ -313,6 +313,8 @@ ol {
 	top: 14px;
 }
 
+
+
 .inner-header .user-access {
 	float: right;
 	margin-right: 100px;
@@ -428,6 +430,11 @@ ol {
 .slicknav_menu {
 	display: none;
 }
+
+
+
+
+
 
 /*---------------------
   Search Bar
@@ -1345,7 +1352,7 @@ ol {
 	margin-right: 4px;
 }
 
-.product-content p{
+.product-content p {
 	color: #838383;
 	font-size: 14px;
 	font-weight: 500;
@@ -2444,4 +2451,3 @@ ol {
 		padding: 10px 0;
 	}
 }
-

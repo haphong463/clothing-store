@@ -7,7 +7,7 @@
 
 <body>
   <!-- Replace "test" with your own sandbox Business account app client ID -->
-  <script src="https://www.paypal.com/sdk/js?client-id=test&currency=USD"></script>
+  <script src="https://www.paypal.com/sdk/js?client-id=ATGXcrNc5l8akd8iyRwk-OI4GXTyXAQy_nybdU9fGSfHpFA3crp3AUjbFIHEKYuiGyTkLpczjCgFS2GH&currency=USD"></script>
   <!-- Set up a container element for the button -->
   <div id="paypal-button-container"></div>
   <script>
@@ -24,7 +24,7 @@
             body: JSON.stringify({
               cart: [{
                 sku: "YOUR_PRODUCT_STOCK_KEEPING_UNIT",
-                quantity: "YOUR_PRODUCT_QUANTITY",
+                quantity: 2,
               }, ],
             }),
           })

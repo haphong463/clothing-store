@@ -1,7 +1,17 @@
+<?php include('layout/header.php') ?>
+
 <?php
 require_once('db/dbhelper.php');
+
+
+
 $p_cat_id = isset($_GET['p_cat_id']) ? $_GET['p_cat_id'] : null;
 $cat_id = isset($_GET['cat_id']) ? $_GET['cat_id'] : null;
+$search_product = isset($_GET['search-product']) ? $_GET['search-product'] : null;
+$filter = isset($_GET['sort']) ? $_GET['sort'] : null;
+
+
+
 
 if ($p_cat_id) {
     $sql = "SELECT * FROM Product WHERE p_cat_id = $p_cat_id";
@@ -14,12 +24,29 @@ if ($p_cat_id) {
     $sql2 = "SELECT cat_name from category where cat_id = $cat_id";
     $cat = executeSingleResult($sql2);
     $name = $cat['cat_name'];
+} elseif ($search_product) {
+    $keyword = "%$search_product%"; // Từ khóa tìm kiếm
+    $sql = "SELECT * FROM Product 
+    INNER JOIN product_variant ON product_variant.pid = product.pid 
+    WHERE product_variant.keyword LIKE '$keyword'  GROUP BY product_variant.keyword";
+    $name = "Search Results for '$search_product'";
 } else {
     $sql = "SELECT * FROM Product";
     $name = "Shop";
 }
 
-
+if ($filter == 'orders') {
+    $sql .= " INNER JOIN order_details ON order_details.pid = Product.pid
+              GROUP BY Product.pid
+              ORDER BY COUNT(order_details.pid) DESC";
+} elseif ($filter == 'low-high') {
+    $sql .= " ORDER BY price ASC";
+} elseif ($filter == 'high-low') {
+    $sql .= " ORDER BY price DESC";
+} elseif ($filter == 'newest') {
+    $sql .= " WHERE DATEDIFF(CURDATE(), created_at) < 7
+              ORDER BY created_at DESC";
+}
 $products = executeResult($sql);
 $totalProducts = count($products); // Tổng số sản phẩm
 $limit = 12; // Số sản phẩm hiển thị trên mỗi trang
@@ -35,7 +62,6 @@ $products = executeResult($sql);
 
 ?>
 
-<?php include('layout/header.php') ?>
 
 <!-- Page Add Section Begin -->
 <section class="page-add">
@@ -48,9 +74,8 @@ $products = executeResult($sql);
                     <a href="categories.php"><?php echo $name ?></a>
                 </div>
             </div>
-            <?php
-                include ('layout/discount.php');
-            ?>
+            <?php include('layout/discount.php') ?>
+
         </div>
     </div>
 </section>
@@ -64,13 +89,15 @@ $products = executeResult($sql);
                 <div class="col-lg-12">
                     <div class="categories-filter">
                         <div class="cf-left">
-                            <form action="categories.php">
-                                <select class="sort" name="sort">
+                            <form action="categories.php" method="get">
+                                <select class="sort" name="sort" onchange="sortProducts(this)">
                                     <option value="">Sort by</option>
-                                    <option value="orders">Orders</option>
-                                    <option value="newest">Newest</option>
-                                    <option value="price">Price</option>
+                                    <option value="orders" <?php echo ($filter == 'orders') ? 'selected' : ''; ?>>Orders</option>
+                                    <option value="newest" <?php echo ($filter == 'newest') ? 'selected' : ''; ?>>Newest</option>
+                                    <option value="low-high" <?php echo ($filter == 'low-high') ? 'selected' : ''; ?>>Price: Low to High</option>
+                                    <option value="high-low" <?php echo ($filter == 'high-low') ? 'selected' : ''; ?>>Price: High to Low</option>
                                 </select>
+
                             </form>
                         </div>
                         <div class="cf-right">
@@ -105,6 +132,17 @@ $products = executeResult($sql);
                             <div class="hover-icon">
                                 <a href="<?php echo $imagePath; ?>" class="pop-up"><img src="img/icons/zoom-plus.png" alt=""></a>
                             </div>
+                            <div class="p-status">
+                                <?php
+                                $createdDate = $product['created_at'];
+                                $currentDate = date('Y-m-d');
+                                $dateDiff = floor((strtotime($currentDate) - strtotime($createdDate)) / (60 * 60 * 24));
+
+                                if ($dateDiff < 7) {
+                                    echo 'NEW';
+                                }
+                                ?>
+                            </div>
                         </figure>
                         <div class="product-text">
                             <a href="product-page.php?pid=<?php echo $pid ?>">
@@ -131,5 +169,18 @@ $products = executeResult($sql);
 </section>
 
 <!-- Categories Page Section End -->
+<script>
+    function sortProducts(selectBox) {
+        var selectedSort = selectBox.value; // Lấy giá trị của tùy chọn sort đã chọn
+        var url = 'categories.php'; // URL của trang hiện tại
+
+        // Kiểm tra nếu đã chọn một tùy chọn sort
+        if (selectedSort !== '') {
+            url += '?sort=' + selectedSort; // Thêm tham số sort vào URL
+        }
+
+        window.location.href = url; // Chuyển hướng đến URL đã được cập nhật
+    }
+</script>
 
 <?php include('layout/footer.php') ?>

@@ -92,7 +92,6 @@ $images = executeResult($sql_image);
                                                         <th scope="col">Color</th>
                                                         <th scope="col">Size</th>
                                                         <th scope="col">Quantity</th>
-                                                        <th scope="col">Description</th>
                                                         <th scope="col">Action</th>
                                                     </tr>
                                                 </thead>
@@ -100,52 +99,28 @@ $images = executeResult($sql_image);
                                                     <?php
                                                     if ($product != null) {
                                                         foreach ($product as $p) {
-                                                            $color_string = '';
-                                                            $hex_string = '';
-                                                            $size_string = '';
-                                                            $quantity_string = '';
+                                                            // $quantity_string = '';
                                                             $pid = $p['pid'];
-                                                            $color_array = array();
-                                                            $hex_array = array();
-                                                            $size_array = array();
-                                                            $quantity_array = array();
                                                             $quantityDisplayed = false;
 
-                                                            $sql_quantity = "SELECT DISTINCT quantity FROM product_quantity where pid = $pid";
-                                                            $quantity_result = executeResult($sql_quantity);
+                                                            $sql_variant = "SELECT quantity, size FROM product_variant where pid = $pid";
+                                                            $variant = executeResult($sql_variant);
 
-                                                            $sql_color = "SELECT * FROM product_color WHERE pid = $pid";
-                                                            $colors_result = executeResult($sql_color);
+                                                            // foreach ($quantity_result as $quantity) {
+                                                            //     $quantity_array[] = $quantity['quantity'];
+                                                            // }
 
-                                                            $sql_size = "SELECT * FROM product_size where pid = $pid";
-                                                            $sizes_result = executeResult($sql_size);
-
-                                                            foreach ($quantity_result as $quantity) {
-                                                                $quantity_array[] = $quantity['quantity'];
-                                                            }
-
-                                                            foreach ($sizes_result as $size) {
-                                                                $size_array[] = $size['size'];
-                                                            }
-                                                            foreach ($colors_result as $color) {
-                                                                $color_array[] = $color['color_name'];
-                                                                $hex_array[] = $color['hex'];
-                                                            }
-
-                                                            $size_string .= implode(', ', $size_array);
-                                                            $color_string .= implode(', ', $color_array);
-                                                            $hex_string .= implode(', ', $hex_array);
-                                                            if (!$quantityDisplayed) {
-                                                                $quantity_string .= implode(', ', $quantity_array);
-                                                                $quantityDisplayed = true;
-                                                            }
+                                                            // if (!$quantityDisplayed) {
+                                                            //     $quantity_string .= implode(' | ', $quantity_array);
+                                                            //     $quantityDisplayed = true;
+                                                            // }
                                                     ?>
                                                             <tr>
                                                                 <?php
                                                                 foreach ($categories as $c) {
                                                                     if ($c['cat_id'] == $p['cat_id']) {
                                                                 ?>
-                                                                        <td><?php echo $c['cat_name']  ?></td>
+                                                                        <td><b><?php echo $c['cat_name']  ?></b></td>
                                                                 <?php
                                                                     }
                                                                 }
@@ -154,7 +129,7 @@ $images = executeResult($sql_image);
                                                                 foreach ($types as $t) {
                                                                     if ($t['p_cat_id'] == $p['p_cat_id']) {
                                                                 ?>
-                                                                        <td><?php echo $t['p_cat_name']  ?></td>
+                                                                        <td><b><?php echo $t['p_cat_name']  ?><b></td>
                                                                 <?php
                                                                     }
                                                                 }
@@ -162,24 +137,32 @@ $images = executeResult($sql_image);
 
                                                                 <td><?php echo $p['name'] ?></td>
                                                                 <td><?php echo $p['price'] ?></td>
-                                                                <td><?php echo $color_string ?></td>
-                                                                <td><?php echo $size_string ?></td>
-                                                                <td><?php echo $quantity_string ?></td>
-                                                                <td width="30%"><?php echo strlen($p['description']) > 150 ? substr($p['description'], 0, 150) . '...' : $p['description']; ?></td>
+                                                                <td><?php echo $p['color'] ?></td>
+                                                                <td><?php
+                                                                    $sizeCount = count($variant);
+                                                                    foreach ($variant as $index => $size) {
+                                                                        echo $size['size'];
+                                                                        if ($index < $sizeCount - 1) {
+                                                                            echo ' | ';
+                                                                        }
+                                                                    }
+                                                                    ?></td>
+                                                                <td><?php $quantityCount = count($variant);
+                                                                    foreach ($variant as $index => $quantity) {
+                                                                        echo $quantity['quantity'];
+                                                                        if ($index < $quantityCount - 1) {
+                                                                            echo ' | ';
+                                                                        }
+                                                                    } ?></td>
                                                                 <td><a href="product-update.php?pid=<?php echo $p['pid'] ?>">
-                                                                        <button class="btn">
-                                                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil" viewBox="0 0 16 16">
-                                                                                <path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z" />
-                                                                            </svg>
+                                                                        <button class="btn btn-info">
+                                                                            Edit
                                                                         </button>
                                                                     </a>
                                                                     |
                                                                     <a href="process/category-delete.php?id=<?php echo $p['pid']; ?>">
-                                                                        <button class="btn">
-                                                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
-                                                                                <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6Z" />
-                                                                                <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1ZM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118ZM2.5 3h11V2h-11v1Z" />
-                                                                            </svg>
+                                                                        <button class="btn btn-danger">
+                                                                            Delete
                                                                         </button>
                                                                     </a>
                                                                 </td>

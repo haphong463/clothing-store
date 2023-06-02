@@ -4,29 +4,23 @@ require_once('db/dbhelper.php');
 
 
 if (!isset($_GET['pid']) || !is_numeric($_GET['pid'])) {
-    header("Location: index.php"); // Chuyển hướng về trang index.php
-    exit(); // Kết thúc thực thi mã
+    header("Location: index.php");
+    exit(); //
 }
-
 $pid = $_GET['pid'];
 
-// Kiểm tra xem pid có tồn tại trong bảng Product hay không
 $product_query = "SELECT * FROM product WHERE pid = $pid";
 $product_result = executeSingleResult($product_query);
 
-$p_cat_id = $product_result['p_cat_id'];
-$sql_p_cat = "SELECT * FROM product_category WHERE p_cat_id = $p_cat_id";
-$p_cat_result = executeSingleResult($sql_p_cat);
-
-
-
-// Nếu không tìm thấy pid trong bảng Product, chuyển hướng về trang index.php
 if (!$product_result) {
-    header("Location: index.php"); // Chuyển hướng về trang index.php
-    exit(); // Kết thúc thực thi mã
+    header("Location: index.php");
+    exit();
 }
 
+$p_cat_id = $product_result['p_cat_id'];
 
+$sql_p_cat = "SELECT * FROM product_category WHERE p_cat_id = $p_cat_id";
+$p_cat_result = executeSingleResult($sql_p_cat);
 ?>
 
 <?php include('layout/header.php') ?>
@@ -43,7 +37,7 @@ if (!$product_result) {
                 </div>
             </div>
             <?php
-                include ('layout/discount.php');
+            include('layout/discount.php');
             ?>
         </div>
     </div>
@@ -131,11 +125,23 @@ if (!$product_result) {
                     $result = executeSingleResult($sql_cat);
                     $sql_p_cat = "SELECT * FROM product_category";
                     $result_p_cat = executeResult($sql_p_cat);
-                    $sql_variant = "SELECT * FROM product_variant";
+                    $sql_variant = "SELECT * FROM product_variant WHERE pid = $pid GROUP BY keyword";
                     $result_variant = executeResult($sql_variant);
                     ?> -->
             <div class="col-lg-6">
                 <div class="product-content">
+                    <small>
+
+                        <?php
+                        $createdDate = $product_result['created_at'];
+                        $currentDate = date('Y-m-d');
+                        $dateDiff = floor((strtotime($currentDate) - strtotime($createdDate)) / (60 * 60 * 24));
+
+                        if ($dateDiff < 7) {
+                            echo '#NEW';
+                        }
+                        ?>
+                    </small>
                     <h2><?php echo $info_product['name'] ?></h2>
                     <div class="pc-meta">
                         <h5>
@@ -151,60 +157,20 @@ if (!$product_result) {
                             <i class="fa fa-star"></i>
                         </div>
                     </div>
-
-
                     <?php
-                    $description = $info_product['description'];
-                    $description = str_replace('<ul>', '<ul style="color: #838383; font-size: 14px; font-weight: 500; line-height: 30px; margin-bottom: 35px; margin-left:15px">', $description);
-                    echo $description;
-                    ?>
-
-
-
-                    <?php
-
-
-                    $size_query = "SELECT size FROM product_size WHERE pid = $pid";
-                    $size_result = executeResult($size_query);
-
-                    $sql_color_hex = "SELECT * FROM product_color where pid = $pid";
-                    $color_hex = executeResult($sql_color_hex);
+                    $product_quantity_query = "SELECT size FROM product_variant WHERE pid = $pid";
+                    $size_result = executeResult($product_quantity_query);
 
                     ?>
-
-
-
-
 
                     <form action="shopping-cart.php" method="post">
                         <input type="hidden" name="pid" value="<?php echo $pid; ?>">
-                        <div id="selected-color"></div>
-                        <div class="product-color">
-                            <?php
-                            foreach ($color_hex as $hex) {
-                                $firstColor = $color_hex[0]['color_name'];
-
-                            ?>
-                                <label class="square-radio">
-                                    <input type="radio" name="color" value="<?php echo $hex['color_name'] ?>" <?php if ($firstColor == $hex['color_name']) {
-                                                                                                                    echo 'checked';
-                                                                                                                } ?>>
-                                    <span style="background-color:<?php echo $hex['hex'] ?>;"><span>
-                                </label>
-                            <?php
-
-                            }
-                            ?>
-                        </div>
-
-
+                        <input type="hidden" name="color" value="<?php echo $product_result['color'] ?>">
                         <div class="form-group">
                             <!-- form-group Begin -->
                             <div class='pd-size-choose'>
-                                <?php
-                                foreach ($size_result as $size) {
+                                <?php foreach ($size_result as $size) {
                                     $firstSize = $size_result[0]['size'];
-
                                     $value = '';
                                     if ($size['size'] == "M") {
                                         $value = "Medium";
@@ -216,18 +182,26 @@ if (!$product_result) {
                                         $value = "Extra Large";
                                     }
 
-                                ?>
-                                    <div class='sc-item'>
-                                        <input type='radio' id='<?php echo $size['size'] ?>-size' class="form-control" name='size' value="<?php echo $value ?>" <?php if ($size['size'] == $firstSize) {
-                                                                                                                                                                    echo "checked";
-                                                                                                                                                                } ?> required novalidate>
-                                        <label for='<?php echo $size['size'] ?>-size'><?php echo $size['size'] ?></label>
-                                    </div>
-                                <?php
-                                }
-                                ?>
-                            </div>
+                                    $product_quantity_query = "SELECT * FROM product_variant WHERE pid = $pid AND size = '{$size['size']}'";
+                                    $product_quantity_result = executeSingleResult($product_quantity_query);
+                                    $quantity = $product_quantity_result['quantity'];
 
+                                    if ($quantity > 0) { // Kiểm tra quantity
+                                ?>
+                                        <div class='sc-item'>
+                                            <input type='radio' id='<?php echo $size['size'] ?>-size' class="form-control" name='size' value="<?php echo $value ?>" <?php if ($size['size'] == $firstSize) {
+                                                                                                                                                                        echo "checked";
+                                                                                                                                                                    } ?> required novalidate>
+                                            <label for='<?php echo $size['size'] ?>-size'><?php echo $size['size'] ?></label>
+                                        </div>
+                                    <?php } else { ?>
+                                        <div class='sc-item out-of-stock'>
+                                            <input type='radio' id='<?php echo $size['size'] ?>-size' class="form-control" name='size' value="<?php echo $value ?>" disabled>
+                                            <label for='<?php echo $size['size'] ?>-size'><?php echo $size['size'] ?><span class="stock-status">X</span></label>
+                                        </div>
+                                <?php }
+                                } ?>
+                            </div>
                         </div>
 
                         <div class="pro-quantity">
@@ -238,7 +212,7 @@ if (!$product_result) {
                         <?php
                         if (isset($_SESSION['c_username_email'])) {
                         ?>
-                            <button name="add-to-cart" class="add">Add to cart</button>
+                            <button name="add-to-cart" id="add" class="add">Add to cart</button>
                         <?php
                         } else {
                         ?>
@@ -247,7 +221,6 @@ if (!$product_result) {
                         }
                         ?>
                     </form>
-
                     <ul class="tags">
 
                         <li><span>Category: </span>
@@ -265,23 +238,39 @@ if (!$product_result) {
                             }
                             ?>
                         </li>
-
-
-
                         <li><span>Tags :</span> <?php
                                                 foreach ($result_variant as $v) {
-                                                    if ($v['p_id'] == $info_product['pid']) {
+                                                    if ($v['pid'] == $info_product['pid']) {
                                                         echo $v['keyword'];
                                                     }
                                                 }
                                                 ?></li>
-
                     </ul>
                 </div>
             </div>
         </div>
     </div>
 </section>
+<div class="container mt-5">
+    <div class="product-tabs">
+        <button class="tab-button active" data-tab="description">
+            Description
+        </button>
+        <button class="tab-button" data-tab="review">Review</button>
+    </div>
+
+    <div class="tab-content active" id="description">
+        <?php
+        $description = $product_result['description'];
+        $description = str_replace('<ul>', '<ul style="color: #838383; font-size: 14px; font-weight: 500; line-height: 30px; margin-bottom: 35px; margin-left:15px">', $description);
+        echo $description;
+        ?>
+    </div>
+
+    <div class="tab-content" id="review">
+
+    </div>
+</div>
 <!-- Product Page Section End -->
 
 <!-- Related Product Section Begin -->
@@ -336,29 +325,38 @@ if (!$product_result) {
 
 <!-- Footer Section Begin -->
 <script>
-    var colorInputs = document.querySelectorAll('input[name="color"]');
-    var selectedColorElement = document.getElementById('selected-color');
+    function validateSizeSelection() {
+        var sizes = document.getElementsByName('size');
+        var sizeSelected = false;
 
-    // Lấy thông tin màu và tên màu đầu tiên
-    var firstColor = colorInputs[0].value;
-    var firstColorHex = colorInputs[0].nextElementSibling.style.backgroundColor;
-    var firstColorStyle = 'color: ' + firstColorHex + ';';
+        for (var i = 0; i < sizes.length; i++) {
+            if (sizes[i].checked) {
+                sizeSelected = true;
+                break;
+            }
+        }
 
-    // Hiển thị màu và tên màu đầu tiên ban đầu
-    selectedColorElement.innerHTML = 'Color: <span style="' + firstColorStyle + '">' + firstColor + '</span>';
+        var errorMessage = document.getElementById('size-error-message');
+        if (sizeSelected && errorMessage) {
+            errorMessage.remove();
+        } else if (!sizeSelected && !errorMessage) {
+            errorMessage = document.createElement('p');
+            errorMessage.innerHTML = 'Please choose a size!';
+            errorMessage.style.color = 'red';
+            errorMessage.id = 'size-error-message';
 
-    for (var i = 0; i < colorInputs.length; i++) {
-        colorInputs[i].addEventListener('change', function() {
-            var selectedColor = this.value;
-            var selectedColorHex = this.nextElementSibling.style.backgroundColor;
-            var selectedColorStyle = 'color: ' + selectedColorHex + ';';
-
-            selectedColorElement.innerHTML = 'Color: <span style="' + selectedColorStyle + '">' + selectedColor + '</span>';
-        });
+            var sizeChooseDiv = document.querySelector('.pd-size-choose');
+            sizeChooseDiv.appendChild(errorMessage);
+        }
     }
+    var sizeInputs = document.getElementsByName('size');
+    for (var i = 0; i < sizeInputs.length; i++) {
+        sizeInputs[i].addEventListener('change', validateSizeSelection);
+    }
+
+    var addButton = document.getElementById('add');
+    addButton.addEventListener('click', validateSizeSelection);
 </script>
-
-
 <script>
     function decrement() {
         var quantityInput = document.getElementById('quantity');
@@ -373,5 +371,41 @@ if (!$product_result) {
         var currentValue = parseInt(quantityInput.value);
         quantityInput.value = currentValue + 1;
     }
+</script>
+
+<script>
+    // Lắng nghe sự kiện khi người dùng click vào nút hoặc tab
+    var tabButtons = document.querySelectorAll('.tab-button');
+    var tabContents = document.querySelectorAll('.tab-content');
+
+    function setActiveTab(tab) {
+        // Xóa lớp active khỏi tất cả các nút hoặc tab
+        tabButtons.forEach(function(button) {
+            button.classList.remove('active');
+        });
+
+        // Ẩn tất cả các nội dung của tab
+        tabContents.forEach(function(content) {
+            content.classList.remove('active');
+        });
+
+        // Thêm lớp active cho nút hoặc tab được chọn
+        tab.classList.add('active');
+
+        // Hiển thị nội dung của tab tương ứng
+        var targetTabId = tab.getAttribute('data-tab');
+        var targetTabContent = document.getElementById(targetTabId);
+        targetTabContent.classList.add('active');
+    }
+
+    // Lắng nghe sự kiện click cho mỗi nút hoặc tab
+    tabButtons.forEach(function(button) {
+        button.addEventListener('click', function() {
+            setActiveTab(this);
+        });
+    });
+
+    // Mặc định hiển thị tab Description khi trang được tải
+    setActiveTab(tabButtons[0]);
 </script>
 <?php include('layout/footer.php') ?>

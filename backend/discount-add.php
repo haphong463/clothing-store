@@ -57,6 +57,10 @@
                         <input type="number" class="form-control" name="date" required id="date" placeholder="">
                     </div>
                     <div class="form-group col-md-6">
+                        <label for="quantity">Quantity: </label>
+                        <input type="number" class="form-control" name="quantity" id="quantity">
+                    </div>
+                    <div class="form-group col-md-6">
                         <label for="banner">Banner: </label>
                         <input type="file" class="form-control" name="banner" id="banner">
                     </div>

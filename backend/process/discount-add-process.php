@@ -18,6 +18,7 @@ function generateCouponCode()
 if (isset($_POST['create-coupon'])) {
     $coupon = generateCouponCode();
     $discount = $_POST['discount'];
+    $quantity = $_POST['quantity'];
     $startDate = date('Y-m-d');
     $expirationDays = $_POST['date'];
     $expirationDate = date('Y-m-d', strtotime("+$expirationDays days"));
@@ -56,7 +57,7 @@ if (isset($_POST['create-coupon'])) {
     $image = 'image/discount/' . $_FILES["banner"]["name"];
 
 
-    $sql = "INSERT INTO discount (coupon_code, discount, startDate, expiration_date, banner) VALUES ('$coupon', '$discount', '$startDate', '$expirationDate', '$image')";
+    $sql = "INSERT INTO discount (coupon_code, discount, quantity, startDate, expiration_date, banner) VALUES ('$coupon', '$discount','$quantity', '$startDate', '$expirationDate', '$image')";
     // echo $sql;
     execute($sql);
     // header('Location: ../discount.php');

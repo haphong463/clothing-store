@@ -36,6 +36,41 @@ $product = executeResult($sql2);
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/assets/css/font-awesome.min.css">
 
     <style>
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        button.tab-button {
+            cursor:pointer;
+            font-size: 14px;
+            font-weight: 600;
+            position: relative;
+            letter-spacing: .02em;
+            display: block;
+            padding: 10px 25px;
+            outline: none;
+            background: #eee;
+            color: #333;
+            border: none;
+        }
+
+        button.tab-button.active,  button.tab-button:hover {
+            transition: .5s;
+            opacity: 1;
+            text-decoration: none;
+            background-color: #fff;
+            color: #000;
+        }
+
+        .product-tabs {
+            display: flex;
+            justify-content: center;
+        }
+
         .hero-items .owl-nav button[type=button].owl-next {
             left: auto;
             right: 60px;
@@ -58,7 +93,7 @@ $product = executeResult($sql2);
         }
 
         .single-product-item figure img.product-image {
-            height: 250px;
+            height: 288.5px;
         }
 
         .header-section {
@@ -66,9 +101,7 @@ $product = executeResult($sql2);
             padding-right: 0;
         }
 
-        .product-img figure img {
-            height: 55vh;
-        }
+
 
         .inner-header .main-menu ul li .sub-menu {
             height: 30vh;
@@ -311,6 +344,84 @@ $product = executeResult($sql2);
         a.select-more {
             color: #333;
         }
+
+        .sc-item.out-of-stock label {
+            color: red;
+            position: relative;
+        }
+
+        .sc-item.out-of-stock label .stock-status {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: black;
+            opacity: 0.3;
+            border-radius: 50%;
+            height: 16px;
+            font-size: 3rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .product-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .product-image img {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+        }
+
+        .product-details {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .product-name {
+            font-weight: bold;
+        }
+
+        .product-info p {
+            margin: 0;
+            font-weight: 600;
+        }
+
+        a.order_back {
+            color: #333;
+            border: 1px solid #333;
+            padding: 3%;
+        }
+
+        a.order_back:hover {
+            color: white;
+            background-color: #333;
+            transition: .5s;
+        }
+
+        .btn--small {
+            padding: 0 10px;
+            font-size: .92308em;
+            border-width: 2px;
+            line-height: 25px;
+        }
+
+        .btn--secondary {
+            color: #fff;
+            background-color: #e55151;
+            border-color: #e55151;
+        }
+
+        .btn--secondary:hover {
+            color: #fff;
+            background-color: #111;
+            border-color: #111;
+
+        }
     </style>
 </head>
 
@@ -325,7 +436,7 @@ $product = executeResult($sql2);
         <div class="h-100 d-flex align-items-center justify-content-center">
             <div class="search-close-switch">+</div>
             <form class="search-model-form" action="categories.php" method="get">
-                <input type="text" id="search-input" name="search-product" placeholder="Search here.....">
+                <input type="text" id="search-input" name="search-product" autocomplete="off" placeholder="Search here.....">
             </form>
         </div>
     </div>
@@ -337,19 +448,20 @@ $product = executeResult($sql2);
                 <div class="logo">
                     <a href="./index.php"><img src="image/logo.png" alt=""></a>
                 </div>
-                <div class="header-right">
-                    <div class="main-menu mobile-menu">
-                        <ul>
-                            <li>
-                                <img src="assets/img/icons/search.png" alt="" class="search-trigger">
-                            </li>
-                            <?php
+                <?php
 
-                            // Kiểm tra sự tồn tại của session email hoặc username
-                            if (isset($_SESSION['c_username_email'])) {
-                                $c_id = $_SESSION['c_username_email'];
-                                // Hiển thị phần header-right
-                            ?>
+                // Kiểm tra sự tồn tại của session email hoặc username
+                if (isset($_SESSION['c_username_email'])) {
+                    $c_id = $_SESSION['c_username_email'];
+                    // Hiển thị phần header-right
+                ?>
+                    <div class="header-right">
+                        <div class="main-menu mobile-menu">
+                            <ul>
+                                <li>
+                                    <img src="assets/img/icons/search.png" alt="" class="search-trigger">
+                                </li>
+
 
 
                                 <li><?php echo $c_id['username'] ?></li>
@@ -378,50 +490,51 @@ $product = executeResult($sql2);
                                         </span>
                                     </a>
                                 </li>
-                        </ul>
+                            </ul>
+
+                        </div>
 
                     </div>
+                <?php
+                } else {
+                ?>
+                    <div class="user-access">
+                        <img src="assets/img/icons/search.png" style="margin-right:30px;" alt="" class="search-trigger">
+                        <a href="register.php">Register</a>
+                        <a href="signin.php" class="in">Sign in</a>
+                    </div>
+                <?php
+                }
+                ?>
+                <nav class="main-menu mobile-menu">
+                    <ul>
+                        <li><a class="active" href="./index.php">Home</a></li>
+                        <li><a href="./categories.php">Shop</a>
+                            <ul class="sub-menu">
+                                <?php
+                                foreach ($product as $p) {
+                                ?>
+                                    <li><a href="categories.php?cat_id=<?php echo $p['cat_id'] ?>"><?php echo $p['cat_name'] ?></a></li>
+                                <?php
+                                }
 
-                </div>
-            <?php
-                            } else {
-            ?>
-                <div class="user-access">
-                    <a href="register.php">Register</a>
-                    <a href="signin.php" class="in">Sign in</a>
-                </div>
-            <?php
-                            }
-            ?>
-            <nav class="main-menu mobile-menu">
-                <ul>
-                    <li><a class="active" href="./index.php">Home</a></li>
-                    <li><a href="./categories.php">Shop</a>
-                        <ul class="sub-menu">
-                            <?php
-                            foreach ($product as $p) {
-                            ?>
-                                <li><a href="categories.php?cat_id=<?php echo $p['cat_id'] ?>"><?php echo $p['cat_name'] ?></a></li>
-                            <?php
-                            }
+                                ?>
+                            </ul>
+                            <ul class="sub-menu" style="margin-left:100px">
+                                <?php
+                                foreach ($product_categories as $c) {
+                                ?>
+                                    <li><a href="categories.php?p_cat_id=<?php echo $c['p_cat_id'] ?>"><?php echo $c['p_cat_name'] ?></a></li>
+                                <?php
+                                }
 
-                            ?>
-                        </ul>
-                        <ul class="sub-menu" style="margin-left:100px">
-                            <?php
-                            foreach ($product_categories as $c) {
-                            ?>
-                                <li><a href="categories.php?p_cat_id=<?php echo $c['p_cat_id'] ?>"><?php echo $c['p_cat_name'] ?></a></li>
-                            <?php
-                            }
-
-                            ?>
-                        </ul>
-                    </li>
-                    <li><a href="./about-us.php">About</a></li>
-                    <li><a href="./contact.php">Contact</a></li>
-                </ul>
-            </nav>
+                                ?>
+                            </ul>
+                        </li>
+                        <li><a href="./about-us.php">About</a></li>
+                        <li><a href="./contact.php">Contact</a></li>
+                    </ul>
+                </nav>
             </div>
         </div>
     </header>

@@ -12,7 +12,6 @@ if (isset($_GET['d_id'])) {
     $startDate = $run_sql['startDate']; // Thay thế giá trị này bằng cách lấy từ cơ sở dữ liệu
     $image = $run_sql['banner'];
     // Tính toán số ngày còn lại
-    // $currentDate = date('Y-m-d');
     $remainingDays = intval((strtotime($expirationDate) - strtotime($startDate)) / (60 * 60 * 24));
 }
 

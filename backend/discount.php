@@ -76,8 +76,7 @@ $discount = executeResult($sql);
                                                         <th scope="col">Count</th>
                                                         <th scope="col">Coupon Code</th>
                                                         <th scope="col">Discount</th>
-                                                        <th scope="col">Start Date</th>
-                                                        <th scope="col">Expiration Date</th>
+                                                        <th scope="col">Quantity</th>
                                                         <th scope="col">Banner</th>
                                                         <th scope="col">Action</th>
                                                     </tr>
@@ -89,7 +88,7 @@ $discount = executeResult($sql);
                                                     ?>
                                                             <tr>
                                                                 <td>
-                                                                    <span id="countdown-<?php echo $d['id']; ?>"></span>
+                                                                    <span style="font-weight: bold;" id="countdown-<?php echo $d['id']; ?>"></span>
                                                                     <script>
                                                                         // Đếm ngược thời gian
                                                                         var countdownDate<?php echo $d['id']; ?> = new Date("<?php echo  $d['expiration_date']; ?>").getTime();
@@ -115,10 +114,9 @@ $discount = executeResult($sql);
                                                                 </td>
                                                                 <td><?php echo $d['coupon_code'] ?></td>
                                                                 <td><?php echo number_format($d['discount'], 0) ?>%</td>
-                                                                <td><?php echo $d['startDate'] ?></td>
-                                                                <td><?php echo $d['expiration_date'] ?></td>
-                                                                <td><img src="../<?php echo $d['banner']; ?>" alt=""></td>
-                                                                <td><a href="discount-edit.php?d_id=<?php echo $d['id'] ?>"><button class="btn btn-info">Edit</button></a> | <a href="process/category-delete.php?id=<?php echo $c['cat_id']; ?>"><button class="btn btn-danger">Delete</button></a> </td>
+                                                                <td><?php echo $d['quantity'] ?></td>
+                                                                <td><img src="../<?php echo $d['banner']; ?>" width="200px" height="150px" alt=""></td>
+                                                                <td><a href="discount-edit.php?d_id=<?php echo $d['id'] ?>"><button class="btn btn-info">Edit</button></a> | <a href="process/delete.php?id=<?php echo $d['id'] ?>"><button class="btn btn-danger">Delete</button></a> </td>
 
                                                             </tr>
                                                     <?php

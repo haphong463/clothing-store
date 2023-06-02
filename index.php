@@ -77,38 +77,13 @@ $p_category = executeResult($sql);
     <div class="features-box">
         <div class="container">
             <div class="row">
-                <div class="col-lg-6">
-                    <div class="row">
-                        <div class="col-lg-12">
-                            <div class="single-box-item first-box">
-                                <img src="assets/img/f-box-1.jpg" alt="">
-                                <div class="box-text">
-                                    <span class="trend-year">2019 Party</span>
-                                    <h2>Jewelry</h2>
-                                    <span class="trend-alert">Trend Allert</span>
-                                    <a href="#" class="primary-btn">See More</a>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-lg-12">
-                            <div class="single-box-item second-box">
-                                <img src="assets/img/f-box-2.jpg" alt="">
-                                <div class="box-text">
-                                    <span class="trend-year">2019 Trend</span>
-                                    <h2>Footwear</h2>
-                                    <span class="trend-alert">Bold & Black</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-6">
-                    <div class="single-box-item large-box">
-                        <img src="assets/img/f-box-3.jpg" alt="">
+                <div class="col-lg-12">
+                    <div class="single-box-item second-box">
+                        <img src="assets/img/f-box-2.jpg" alt="">
                         <div class="box-text">
-                            <span class="trend-year">2019 Party</span>
-                            <h2>Collection</h2>
-                            <div class="trend-alert">Trend Allert</div>
+                            <span class="trend-year">2019 Trend</span>
+                            <h2>Footwear</h2>
+                            <span class="trend-alert">Bold & Black</span>
                         </div>
                     </div>
                 </div>
@@ -172,8 +147,17 @@ $p_category = executeResult($sql);
                     <div class="single-product-item">
                         <figure>
                             <a href="product-page.php?pid=<?php echo $pid ?>"><img src="<?php echo $imagePath ?>" alt=""></a>
-                            <div class="p-status"><?php if ($info['created_at'] > 7) {
-                                                    } ?></div>
+                            <div class="p-status">
+                                <?php
+                                $createdDate = $info['created_at'];
+                                $currentDate = date('Y-m-d');
+                                $dateDiff = floor((strtotime($currentDate) - strtotime($createdDate)) / (60 * 60 * 24));
+
+                                if ($dateDiff < 7) {
+                                    echo 'NEW';
+                                }
+                                ?>
+                            </div>
                         </figure>
                         <div class="product-text">
                             <h6 style="font-size:1.5rem;"><?php echo $name ?></h6>

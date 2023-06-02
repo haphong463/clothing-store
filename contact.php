@@ -10,9 +10,9 @@
                     <h2>Contact us<span>.</span></h2>
                 </div>
             </div>
-            <div class="col-lg-8">
-                <img src="img/add.jpg" alt="">
-            </div>
+            <?php
+            include('layout/discount.php');
+            ?>
         </div>
     </div>
 </section>
@@ -23,23 +23,23 @@
     <div class="container">
         <div class="row">
             <div class="col-lg-8">
-            <?php if(!empty($statusMsg)){ ?>
-                <div class="status-msg <?php echo $status; ?>"><?php echo $statusMsg; ?> </div>
+                <?php if (!empty($statusMsg)) { ?>
+                    <div class="status-msg <?php echo $status; ?>"><?php echo $statusMsg; ?> </div>
                 <?php } ?>
-                    <form action="" method="POSt" class="contact-form">
-                        <div class="row">
-                            <div class="col-lg-12">
-                                <input type="text" placeholder="Name" name="name">
-                                <input type="email" placeholder="E-mail" name="email">
-                                <input type="text" placeholder="Subject" name="subject">
-                                <textarea placeholder="Message" name="message"></textarea>
-                            </div>
-                            
-                            <div class="col-lg-12 text-right">
-                                <button type="submit" name="submit" value="Submit">Send message</button>
-                            </div>
+                <form action="" method="POSt" class="contact-form">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <input type="text" placeholder="Name" name="name">
+                            <input type="email" placeholder="E-mail" name="email">
+                            <input type="text" placeholder="Subject" name="subject">
+                            <textarea placeholder="Message" name="message"></textarea>
                         </div>
-                    </form>
+
+                        <div class="col-lg-12 text-right">
+                            <button type="submit" name="submit" value="Submit">Send message</button>
+                        </div>
+                    </div>
+                </form>
             </div>
             <div class="col-lg-3 offset-lg-1">
                 <div class="contact-widget">

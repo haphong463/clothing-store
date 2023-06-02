@@ -6,31 +6,21 @@ if (isset($_POST['update-product'])) {
     $name = $_POST['name'];
     $category = $_POST['cat_id'];
     $type = $_POST['p_cat_id'];
-    $description = $_POST['desc'];
-    $colors = explode(',', $_POST['color']);
-    $sizes = explode(',', $_POST['size']);
-    $hexs = explode(',', $_POST['hex']);
-    $quantity = explode(',', $_POST['quantity']);
+    $description = addslashes($_POST['desc']);
+    $color = $_POST['color'];
+    $sizes = $_POST['size'];
+    $quantity = $_POST['quantity'];
     $price = number_format($_POST['price'], '2', '.');
     $keyword = $_POST['keyword'];
-    $desc = addslashes($description);
 
-    $description = addslashes($description);
 
-    $sql_delete_variant = "DELETE FROM product_variant WHERE p_id = $id";
-    execute($sql_delete_variant);
+    $delete_variant_query = "DELETE FROM product_variant WHERE pid = $id";
+    execute($delete_variant_query);
 
-    $sql_delete_size = "DELETE FROM product_size WHERE pid = $id";
-    execute($sql_delete_size);
 
-    $sql_delete_quantity = "DELETE FROM product_quantity WHERE pid = $id";
-    execute($sql_delete_quantity);
-
-    $sql_delete_color = "DELETE FROM product_color WHERE pid = $id";
-    execute($sql_delete_color);
-    $sql = "UPDATE product SET cat_id = $category, p_cat_id = $type, name = '$name', price = $price, description = '$description', updated_at = NOW() WHERE pid = $id";
+    $sql = "UPDATE product SET cat_id = $category, p_cat_id = $type, name = '$name',
+     price = $price, color = '$color', description = '$description', updated_at = NOW() WHERE pid = $id";
     execute($sql);
-
 
 
     // Kiểm tra xem người dùng đã tải lên ảnh mới hay chưa
@@ -62,47 +52,19 @@ if (isset($_POST['update-product'])) {
     $takeid = $id;
     include('uploadImage.php');
 
-    $sql_variant = "INSERT INTO product_variant (p_id, keyword) 
-    VALUES ($id, '$keyword')";
-    execute($sql_variant);
 
-
-    $variant_values = array();
-    foreach ($sizes as $size) {
-        $size = trim($size);
-        $variant_values[] = "($id, '$size')";
-    }
-    if (!empty($variant_values)) {
-        $sql_variant = "INSERT INTO product_size (pid, size)
-VALUES " . implode(', ', $variant_values);
-        execute($sql_variant);
-    }
 
     // Thêm thông tin về quantity (màu sắc và số lượng)
-    $quantity_values = array();
-    foreach ($sizes as $size) {
-        foreach ($colors as $index => $color) {
-            $qty = isset($quantity[$index]) ? intval($quantity[$index]) : 0;
-            $quantity_values[] = "($id, '$size', '$color', $qty)";
-        }
-    }
-    if (!empty($quantity_values)) {
-        $sql_quantity = "INSERT INTO product_quantity (pid, size, color, quantity)
-VALUES " . implode(', ', $quantity_values);
-        execute($sql_quantity);
-    }
+    $keyword = addslashes($keyword);
 
-    // Thêm thông tin về màu sắc
-    $color_values = array();
-    foreach ($colors as $index => $color) {
-        $color = trim($color);
-        $hex = isset($hexs[$index]) ? trim($hexs[$index]) : '';
-        $color_values[] = "($id, '$color', '$hex')";
+    $variant_values = array();
+    foreach ($sizes as $index => $size) {
+        $qty = isset($quantity[$index]) ? intval($quantity[$index]) : 0;
+        $variant_values[] = "($id, '$size', $qty, '$keyword')";
     }
-    if (!empty($color_values)) {
-        $sql_color = "INSERT INTO product_color (pid, color_name, hex)
-VALUES " . implode(', ', $color_values);
-        execute($sql_color);
+    if (!empty($variant_values)) {
+        $sql_size = "INSERT INTO product_variant (pid, size, quantity, keyword) VALUES " . implode(', ', $variant_values);
+        execute($sql_size);
     }
 }
 header('location: ../product.php');

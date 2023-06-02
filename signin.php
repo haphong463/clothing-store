@@ -1,5 +1,6 @@
 <?php include('layout/header.php') ?>
 <?php
+
 if (!isset($_SESSION['c_username_email'])) {
 
     require_once('db/dbhelper.php');
@@ -44,6 +45,7 @@ if (!isset($_SESSION['c_username_email'])) {
                     'email' => $row['email'],
                     'username' => $row['username']
                 );
+
                 exit();
             }
         } else {
@@ -63,8 +65,8 @@ if (!isset($_SESSION['c_username_email'])) {
                     </div>
                 </div>
                 <?php
-                include ('layout/discount.php');
-            ?>
+                include('layout/discount.php');
+                ?>
             </div>
         </div>
     </section>

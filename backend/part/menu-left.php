@@ -13,6 +13,7 @@
             <li><a class="sidebar-header" href="product.php"><i data-feather="box"></i> <span>Products</span></a></li>
             <li><a class="sidebar-header" href="discount.php"><i data-feather="box"></i> <span>Discount</span></a></li>
             <li><a class="sidebar-header" href="slider.php"><i data-feather="box"></i> <span>Slider</span></a></li>
+            <li><a class="sidebar-header" href="orders.php"><i data-feather="box"></i> <span>Transaction</span></a></li>
         </ul>
     </div>
 </div>

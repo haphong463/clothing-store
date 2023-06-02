@@ -97,80 +97,73 @@ if (isset($_GET['pid'])) {
                         </select>
                     </div>
 
-                    <div class="form-group col-md-3">
+                    <div class="form-group col-md-4">
                         <label for="name">Product Name</label>
                         <input type="text" value="<?php echo $result['name'] ?>" required class="form-control" id="name" name="name">
                     </div>
-                    <div class="form-group col-md-3">
+                    <div class="form-group col-md-4">
                         <label for="price">Price: </label>
                         <input type="text" value="<?php echo $result['price'] ?>" required class="form-control" id="price" name="price">
                     </div>
-
                     <?php
-                    $sql_size = "SELECT * FROM product_size WHERE pid = $id";
-                    $sql_quantity = "SELECT DISTINCT quantity FROM product_quantity WHERE pid = $id";
-
-                    $sizes = executeResult($sql_size);
-                    $quantities = executeResult($sql_quantity);
-
-                    $size_string = '';
-                    $quantity_string = '';
-
-                    $quantity_array = array();
-                    $size_array = array();
-                    foreach ($quantities as $quantity) {
-                        $quantity_array[] = $quantity['quantity'];
-                    }
-
-                    $quantity_string .= implode(', ', $quantity_array);
-
-                    foreach ($sizes as $size) {
-                        $size_array[] = $size['size'];
-                    }
-
-                    $size_string .= implode(', ', $size_array);
-                    ?>
-                    <div class="form-group col-md-3">
-                        <label for="size">Size: </label>
-                        <input type="text" value="<?php echo $size_string ?>" required class="form-control" id="size" name="size">
-                    </div>
-                    <div class="form-group col-md-3">
-                        <label for="quantity">Quantity: </label>
-                        <input type="text" value="<?php echo $quantity_string ?>" required class="form-control" id="quantity" name="quantity">
-                    </div>
-                    <?php
-                    $sql_variant = "SELECT keyword FROM product_variant where p_id = $id";
+                    $sql_variant = "SELECT keyword FROM product_variant where pid = $id";
                     $variants = executeSingleResult($sql_variant);
                     ?>
                     <div class="form-group col-md-4">
                         <label for="keyword">Keyword: </label>
                         <input type="text" value="<?php echo $variants['keyword'] ?>" class="form-control" id="keyword" name="keyword">
                     </div>
-
-
                     <?php
-                    $colors = array();
-                    $hexes = array();
+                    $sql_variant = "SELECT quantity, size FROM product_variant WHERE pid = $id";
 
-                    $sql_color = "SELECT * FROM product_color where pid = $id";
-                    $colors_result = executeResult($sql_color);
+                    $variant = executeResult($sql_variant);
 
-                    foreach ($colors_result as $color) {
-                        $colors[] = $color['color_name'];
-                        $hexes[] = $color['hex'];
+                    $quantity_string = '';
+
+                    $quantity_array = array();
+                    foreach ($variant as $quantity) {
+                        $quantity_array[] = $quantity['quantity'];
                     }
+                    $quantity_string .= implode(', ', $quantity_array);
 
-                    $color_string = implode(', ', $colors);
-                    $hex_string = implode(', ', $hexes);
                     ?>
-                    <div class="form-group col-md-4">
-                        <label for="color">Color: </label>
-                        <input type="text" value="<?php echo $color_string ?>" required class="form-control" name="color" id="color">
+                    <div class="form-group col-md-1">
+                        <label for="size">Size:</label>
+                        <?php
+                        foreach ($variant as $size) {
+                            echo '<div id="size-container">
+                <input type="text" required class="form-control" value="' . $size['size'] . '" name="size[]">
+              </div>';
+                        }
+                        ?>
+                        <button type="button" class="add-input">Add</button>
                     </div>
 
+
+
+
+                    <div class="form-group col-md-1">
+                        <label for="quantity">Quantity:</label>
+                        <div id="quantity-container">
+                            <?php
+                            foreach ($variant as $quantity) {
+                                echo '
+                                
+                                <input type="text" class="form-control" value="' . $quantity['quantity'] . '" name="quantity[]">
+
+
+                                ';
+                            }
+                            ?>
+                        </div>
+                    </div>
+
+
+
+
                     <div class="form-group col-md-4">
-                        <label for="hex">Hex Code: </label>
-                        <input type="text" class="form-control" value="<?php echo $hex_string ?>" name="hex" id="hex">
+                        <label for="color">Color: </label>
+                        <input type="text" value="<?php echo $result['color'] ?>" required class="form-control" name="color" id="color">
                     </div>
                     <div class="form-group">
                         <label for="desc">Description: </label>
@@ -204,6 +197,35 @@ if (isset($_GET['pid'])) {
                 <!-- Container-fluid Ends-->
 
             </div>
+            <script>
+                // Lấy các phần tử chứa input
+                const sizeContainer = document.getElementById('size-container');
+                const quantityContainer = document.getElementById('quantity-container');
+
+                // Lấy nút "Add"
+                const addInputBtn = document.querySelector('.add-input');
+
+                // Gắn sự kiện click cho nút "Add"
+                addInputBtn.addEventListener('click', function() {
+                    // Tạo các phần tử mới
+                    const newSizeInput = document.createElement('input');
+                    newSizeInput.type = 'text';
+                    newSizeInput.required = true;
+                    newSizeInput.maxLength = 4; // Thêm maxlength = 3
+                    newSizeInput.classList.add('form-control');
+                    newSizeInput.name = 'size[]';
+
+                    const newQuantityInput = document.createElement('input');
+                    newQuantityInput.type = 'text';
+                    newQuantityInput.required = true;
+                    newQuantityInput.classList.add('form-control');
+                    newQuantityInput.name = 'quantity[]';
+
+                    // Thêm các phần tử mới vào container tương ứng
+                    sizeContainer.appendChild(newSizeInput);
+                    quantityContainer.appendChild(newQuantityInput);
+                });
+            </script>
 
             <script>
                 tinymce.init({

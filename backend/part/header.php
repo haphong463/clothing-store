@@ -38,5 +38,46 @@
             max-height: 50vh;
             overflow: auto;
         }
+
+        .product-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .product-image img {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+        }
+
+        .product-details {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .product-name {
+            font-weight: bold;
+        }
+
+        .product-info p {
+            margin: 0;
+            font-weight: 600;
+        }
+
+        .user-info {
+            margin-top: 15px;
+        }
+
+        .user-info h5 {
+            border: 1px solid #d7d4d4;
+            padding: 2%;
+            margin-top: 30px;
+            font-family: 'NUNITO';
+        }
+    </style>
+
+    </style>
+
     </style>
 </head>
